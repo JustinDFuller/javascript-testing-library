@@ -11,42 +11,40 @@ npm install javascript-testing-library
 ## Usage
 
 ```js
-import { suite } from 'javascript-testing-library'
+// user.test.js
+import { Suite } from 'javascript-testing-library'
 
 import { user } from './user'
 
-suite({
+export const suite = Suite({
   name: 'User',
-  tests(test) {
-  
-    test({
-      name: 'can be added',
-      async callback(t) {
-        t.stub({
-          module: 'sequelize',
-          method: 'upsert',
-          returns(options) {
-            return {
-              id: 1,
-              name: options.name,
-            }
-          }
-        })
-        
-        const user = await user.upsert({
-          name: 'Justin'
-        })
-        
-        t.equal({
-          expected: {
-            id: 1,
-            name: 'Justin'
-          },
-          actual: user
-        })
+})
+ 
+suite.test({
+  name: 'can be added',
+  async callback(t) {
+    t.stub({
+      module: 'sequelize',
+      method: 'upsert',
+      returns(options) {
+        return {
+          id: 1,
+          name: options.name,
+        }
       }
     })
-    
+
+    const user = await user.upsert({
+      name: 'Justin'
+    })
+
+    t.equal({
+      expected: {
+        id: 1,
+        name: 'Justin'
+      },
+      actual: user
+    })
   }
 })
 ```
