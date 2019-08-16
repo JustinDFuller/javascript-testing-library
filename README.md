@@ -11,15 +11,32 @@ npm install javascript-testing-library
 ## Usage
 
 ```js
-const { suite } = require('javascript-testing-library')
+import { suite } from 'javascript-testing-library'
+
+import { user } from './user'
 
 suite({
   name: 'User',
   tests(test) {
+  
     test({
       name: 'can be added',
       async callback(t) {
-        const user = // do something
+        t.stub({
+          module: 'sequelize',
+          method: 'upsert',
+          returns(options) {
+            return {
+              id: 1,
+              name: options.name,
+            }
+          }
+        })
+        
+        const user = await user.upsert({
+          name: 'Justin'
+        })
+        
         t.equal({
           expected: {
             id: 1,
@@ -29,6 +46,7 @@ suite({
         })
       }
     })
+    
   }
 })
 ```
@@ -47,6 +65,9 @@ Using this library will encourage you to write useful tests,
 because it does not allow you assert against the results of `typeof`. 
 You have to assert against an actual value.
 
+Using this library will encouarge you to write useful tests,
+because it only allows you to stub internal modules.
+
 ## What it won't allow you to do
 
 * Skip a test
@@ -55,5 +76,6 @@ You have to assert against an actual value.
 * Use callbacks in tests (it does allow async/await & promises)
 * Mock or stub internal modules
 * Use unmocked http or file system operations
-* Use a before/after beforeEach/afterEach construct
+* Use a setup/teardown construct
+* Forget to restore a stubbed function, because they are automatically restored after each test
 
