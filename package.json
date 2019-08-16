@@ -1,11 +1,23 @@
 {
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm test"
+    }
+  },
+  "lint-staged": {
+      "{lib,test,bin}/**/*.js": [
+        "prettier-standard",
+        "git add"
+      ]
+  },
+  "scripts": {
+    "format": "prettier-standard \"{lib,test,bin}/**/*.js\"",
+    "test": "node lib/test.js"
+  },
   "name": "javascript-testing-library",
   "version": "0.0.0",
   "description": "A highly opinionated testing library for JavaScript",
   "main": "lib/index.js",
-  "scripts": {
-    "test": "lib/test.js"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JustinDFuller/javascript-testing-library.git"
@@ -24,5 +36,10 @@
   "bugs": {
     "url": "https://github.com/JustinDFuller/javascript-testing-library/issues"
   },
-  "homepage": "https://github.com/JustinDFuller/javascript-testing-library#readme"
+  "homepage": "https://github.com/JustinDFuller/javascript-testing-library#readme",
+  "devDependencies": {
+    "husky": "^3.0.3",
+    "lint-staged": "^9.2.1",
+    "prettier-standard": "^9.1.1"
+  }
 }
