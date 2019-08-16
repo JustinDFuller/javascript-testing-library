@@ -53,34 +53,24 @@ suite.addTest({
 
 `javascript-testing-library` is meant to force good testing practices onto a JavaScript application.
 
-Using this library will encourage you to write... 
+### Using this library will encourage you to write... 
 
-Fast tests, 
-because all expensive IO is disallowed by default.
+* Fast tests, because all expensive IO is disallowed by default.
+* Focused tests, because only one assertion is allowed per-test.
+* Useful tests, because it does not allow you assert against the results of `typeof`. You have to assert against an actual value.
 
-Small tests, 
-because only one assertion is allowed per-test.
+### Using this library will discourage you from writing... 
 
-Useful tests, 
-because it does not allow you assert against the results of `typeof`. 
-You have to assert against an actual value.
+* Brittle tests, because it only allows you to stub external modules.
+* Flakey tests, because it disallows expensive IO like http requests and file system operations.
 
-Using this library will discourage you from writing... 
+### This library will not allow you to...
 
-Brittle tests,
-because it only allows you to stub external modules.
-
-Flakey tests,
-because it disallows expensive IO like http requests and file system operations.
-
-## What it won't allow you to do
-
-* Skip a test
-* Have more than one assertion per-test
-* Use any assertion besides deep strict equality
-* Use callbacks in tests (it does allow async/await & promises)
-* Mock or stub internal modules
-* Use unmocked http or file system operations
-* Use a setup/teardown construct
-* Forget to restore a stubbed function, because they are automatically restored after each test
-
+* Skip a test.
+* Have more than one assertion per-test.
+* Use any assertion besides deep strict equality.
+* Use callbacks in tests (it does allow async/await & promises).
+* Mock or stub internal modules.
+* Make unmocked http requests or file system operations.
+* Use a setup/teardown construct that shares state between tests.
+* Forget to restore a stubbed function, because they are automatically restored after each test.
