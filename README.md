@@ -20,9 +20,9 @@ export const suite = Suite({
   name: 'User',
 })
  
-suite.test({
+suite.addTest({
   name: 'can be added',
-  async callback(t) {
+  async test(t) {
     t.stub({
       module: 'sequelize',
       method: 'upsert',
