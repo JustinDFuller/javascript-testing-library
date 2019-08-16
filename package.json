@@ -1,0 +1,28 @@
+{
+  "name": "javascript-testing-library",
+  "version": "0.0.0",
+  "description": "A highly opinionated testing library for JavaScript",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "lib/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JustinDFuller/javascript-testing-library.git"
+  },
+  "keywords": [
+    "testing",
+    "tdd",
+    "bdd",
+    "opinionated",
+    "configless",
+    "noconfig",
+    "test"
+  ],
+  "author": "Justin Fuller <justindanielfuller@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/JustinDFuller/javascript-testing-library/issues"
+  },
+  "homepage": "https://github.com/JustinDFuller/javascript-testing-library#readme"
+}
