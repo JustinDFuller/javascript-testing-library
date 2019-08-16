@@ -12,7 +12,7 @@
   },
   "scripts": {
     "format": "prettier-standard \"{lib,test,bin}/**/*.js\"",
-    "test": "node lib/test.js"
+    "test": "node lib/index.test.js"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",
