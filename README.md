@@ -1,6 +1,6 @@
 # javascript-testing-library
 
-This library is a highly opinionated testing library for JavaScript
+A highly opinionated testing library for JavaScript
 
 ## Install
 
@@ -53,20 +53,24 @@ suite.addTest({
 
 `javascript-testing-library` is meant to force good testing practices onto a JavaScript application.
 
-Using this library will encourage you to write fast tests, 
+Using this library will encourage you to write... 
+
+Fast tests, 
 because all expensive IO is disallowed by default.
 
-Using this library will encourage you to write small tests, 
+Small tests, 
 because only one assertion is allowed per-test.
 
-Using this library will encourage you to write useful tests, 
+Useful tests, 
 because it does not allow you assert against the results of `typeof`. 
 You have to assert against an actual value.
 
-Using this library will discourage you from writing brittle tests,
+Using this library will discourage you from writing... 
+
+Brittle tests,
 because it only allows you to stub external modules.
 
-Using this library will discourage you from writing flakey tests,
+Flakey tests,
 because it disallows expensive IO like http requests and file system operations.
 
 ## What it won't allow you to do
