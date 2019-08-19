@@ -11,10 +11,10 @@ npm install javascript-testing-library --save-dev
 ## Usage
 
 ```js
-// user.test.js
+// User.test.js
 import { Suite } from 'javascript-testing-library'
 
-import { user } from './user'
+import { User } from './User'
 
 export const suite = Suite({
   name: 'User',
@@ -34,9 +34,9 @@ suite.addTest({
       }
     })
 
-    const user = await user.upsert({
+    const user = await User({
       name: 'Justin'
-    })
+    }).upsert()
 
     t.equal({
       expected: {
