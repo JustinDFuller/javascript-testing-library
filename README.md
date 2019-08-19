@@ -64,7 +64,7 @@ suite.addTest({
 ### Using this library will discourage you from writing... 
 
 * Brittle tests, because it only allows you to stub external modules.
-* Flakey tests, because it disallows expensive IO like http requests and file system operations.
+* Flakey tests, because it disallows unreliable IO like http requests and file system operations.
 
 ### This library will not allow you to...
 
