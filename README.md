@@ -21,7 +21,7 @@ export const suite = Suite({
 })
  
 suite.addTest({
-  name: 'can be added',
+  name: 'can upsert a user with only a name',
   async test(t) {
     t.stub({
       module: 'sequelize',
