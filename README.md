@@ -5,7 +5,7 @@ A highly opinionated testing library for JavaScript
 ## Install
 
 ```bash
-npm install javascript-testing-library
+npm install javascript-testing-library --save-dev
 ```
 
 ## Usage
