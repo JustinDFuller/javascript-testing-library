@@ -57,14 +57,14 @@ suite.addTest({
 
 ### Using this library will encourage you to write... 
 
-* Fast tests, because all expensive IO is disallowed by default.
+* Fast tests, because all expensive input and output is disabled.
 * Focused tests, because only one assertion is allowed per-test.
 * Useful tests, because it does not allow you assert against the results of `typeof`. You have to assert against an actual value.
 
 ### Using this library will discourage you from writing... 
 
 * Brittle tests, because it only allows you to stub external modules.
-* Flakey tests, because it disallows unreliable IO like http requests and file system operations.
+* Flakey tests, because it disables unreliable inputs and outputs like http requests and file system operations.
 
 ### This library will not allow you to...
 
