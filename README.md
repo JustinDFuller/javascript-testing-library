@@ -34,16 +34,18 @@ suite.addTest({
       }
     })
 
-    const user = await User({
+    const user = User({
       name: 'Justin'
-    }).upsert()
+    })
+    
+    const actual = await user.upsert()
 
     t.equal({
       expected: {
         id: 1,
         name: 'Justin'
       },
-      actual: user
+      actual
     })
   }
 })
