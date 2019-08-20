@@ -89,7 +89,12 @@ suite.addTest({
 * [ ] Run each test file in its own process
 * [ ] Find and run related tests
 
-## Pretty Printed Output
+## Output
+
+### Error
+<img src="https://raw.githubusercontent.com/JustinDFuller/javascript-testing-library/master/docs/errors.png" width="100%" />
+
+### Success
 
 <img src="https://raw.githubusercontent.com/JustinDFuller/javascript-testing-library/master/docs/Output.png" width="100%" />
 
