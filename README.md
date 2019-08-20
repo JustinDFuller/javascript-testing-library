@@ -71,8 +71,19 @@ suite.addTest({
 * Skip a test.
 * Have more than one assertion per-test.
 * Use any assertion besides deep strict equality.
-* Use callbacks in tests (it does allow async/await & promises).
 * Mock or stub internal modules.
 * Make unmocked http requests or file system operations.
 * Use a setup/teardown construct that shares state between tests.
 * Forget to restore a stubbed function, because they are automatically restored after each test.
+
+## TODO
+* [ ] Pretty printed output
+* [ ] Automatically stub node http
+* [ ] Automatically stub node https
+* [ ] Automatically stub node http/2
+* [ ] Automatically stub node net
+* [ ] Automatically stub node dns
+* [ ] Automatically stub node tls
+* [ ] Automatically stub browser XMLHttpRequest
+* [ ] Automatically stub browser fetch
+* [ ] Run each test file in its own process
