@@ -77,7 +77,7 @@ suite.addTest({
 * Forget to restore a stubbed function, because they are automatically restored after each test.
 
 ## TODO
-* [ ] Pretty printed output
+* [x] Pretty printed output
 * [ ] Automatically stub node http
 * [ ] Automatically stub node https
 * [ ] Automatically stub node http/2
@@ -87,3 +87,9 @@ suite.addTest({
 * [ ] Automatically stub browser XMLHttpRequest
 * [ ] Automatically stub browser fetch
 * [ ] Run each test file in its own process
+* [ ] Find and run related tests
+
+## Pretty Printed Output
+
+<img src="https://raw.githubusercontent.com/JustinDFuller/javascript-testing-library/master/docs/Output.png" width="100%" />
+
