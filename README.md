@@ -92,6 +92,8 @@ suite.addTest({
 ## Output
 
 ### Error
+Errors show a diff, including for objects an arrays. The stack trace will highlight the test file that the error happened in.
+
 <img src="https://raw.githubusercontent.com/JustinDFuller/javascript-testing-library/master/docs/errors.png" width="100%" />
 
 ### Success
