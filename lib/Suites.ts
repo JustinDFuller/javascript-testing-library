@@ -5,7 +5,7 @@ export interface SuitesFormatter extends SuiteFormatter {
   end(): void
 }
 
-interface SuiteOptions {
+interface SuitesOptions {
   formatter: SuitesFormatter
   paths: string[]
 }
@@ -21,7 +21,7 @@ interface Suites {
   runAll(): Promise<void>
 }
 
-export function Suites (options: SuiteOptions): Suites {
+export function Suites (options: SuitesOptions): Suites {
   return {
     async runTests (suites: Suite[]): Promise<void> {
       for (const { suite, path } of suites) {
