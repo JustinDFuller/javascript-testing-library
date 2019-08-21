@@ -1,5 +1,5 @@
 import { Suite } from './Suite'
-const { NoopFormatter } = require('./formatters/noop')
+import { NoopFormatter } from './formatters/noop'
 
 const suite = Suite({
   name: 'Suite'
