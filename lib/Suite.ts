@@ -9,7 +9,7 @@ export interface SuiteFormatter {
 }
 
 export function Suite (options: SuiteOptions) {
-  let tests: Set<TestOptions> = new Set()
+  const tests: Set<TestOptions> = new Set()
 
   function isNameInvalid () {
     return !options || !options.name
@@ -31,7 +31,7 @@ export function Suite (options: SuiteOptions) {
   }
 
   async function runTests (testFormatter: TestFormatter) {
-    for (let test of tests) {
+    for (const test of tests) {
       await Test(test, testFormatter)
     }
   }

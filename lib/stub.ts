@@ -1,4 +1,11 @@
-const fs = require('fs')
+import fs from 'fs'
+
+type ThirdPartyKey = string
+type ThirdPartyProperty = object | number | boolean | string | Function
+
+interface ThirdPartyModule {
+  [propName: string]: ThirdPartyProperty
+}
 
 export interface StubOptions {
   module: string
@@ -6,29 +13,37 @@ export interface StubOptions {
   returns: Function
 }
 
-interface ThirdPartyModule {
-  [propName: string]: any
+interface Stub {
+  resetStubs(): void
+  addStub(options: StubOptions): void
+  automaticallyStubModules(): void
 }
 
-function isFunction (value: any) {
+const ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
+  'You are attempting to access an un-stubbed dependency. Please use t.stub()'
+
+const INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isFunction (value: ThirdPartyProperty): value is Function {
   return typeof value === 'function'
 }
 
 function forEachFunction (
   object: ThirdPartyModule,
-  callback: (propertyName: string, property: any) => void
-) {
-  return Object.keys(object).forEach(function (propertyName) {
+  callback: (propertyName: ThirdPartyKey, property: Function) => void
+): void {
+  Object.keys(object).forEach(function (propertyName) {
     if (isFunction(object[propertyName])) {
-      callback(propertyName, object[propertyName])
+      callback(propertyName, object[propertyName] as Function)
     }
   })
 }
 
 function throwUnstubbedDependencyError (moduleName: string, key: string) {
-  return function unstubbedDependency (...args: any[]) {
+  return function unstubbedDependency (...args: Function[]): never | void {
     const unstubbedDependencyError = new Error(
-      `${Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR} ${moduleName}::${key}`
+      `${ACCESSING_UNSTUBBED_DEPENDENCY_ERROR} ${moduleName}::${key}`
     )
 
     const last = args[args.length - 1]
@@ -41,24 +56,27 @@ function throwUnstubbedDependencyError (moduleName: string, key: string) {
   }
 }
 
-function isUnstubbedMethod (method: Function) {
+function isUnstubbedMethod (method: Function): boolean {
   return method.name !== 'unstubbedDependency'
 }
 
-function throwInternalModuleError () {
-  throw new Error(Stub.INTERNAL_STUB_ERROR)
+function throwInternalModuleError (): never {
+  throw new Error(INTERNAL_STUB_ERROR)
 }
 
-function isInternalModule (moduleName: string) {
+function isInternalModule (moduleName: string): boolean {
   return moduleName.includes('.')
 }
 
-export function Stub () {
-  const modulesBeforeTheyWereStubbed = new Map()
+type UnstubbedModule = Map<string, ThirdPartyModule>
+type UnstubbedModules = Map<string, UnstubbedModule>
 
-  function getUnstubbedModule (moduleName: string) {
+export function Stub (): Stub {
+  const modulesBeforeTheyWereStubbed: UnstubbedModules = new Map()
+
+  function getUnstubbedModule (moduleName: string): UnstubbedModule {
     if (modulesBeforeTheyWereStubbed.has(moduleName)) {
-      return modulesBeforeTheyWereStubbed.get(moduleName)
+      return modulesBeforeTheyWereStubbed.get(moduleName) as UnstubbedModule
     }
 
     const unstubbedModule = new Map()
@@ -66,7 +84,7 @@ export function Stub () {
     return unstubbedModule
   }
 
-  function saveOriginalMethod (options: StubOptions) {
+  function saveOriginalMethod (options: StubOptions): void {
     const realMethod = require(options.module)[options.method]
 
     if (isUnstubbedMethod(realMethod)) {
@@ -75,31 +93,38 @@ export function Stub () {
     }
   }
 
-  function updateRealModule (options: StubOptions) {
+  function updateRealModule (options: StubOptions): void {
     require(options.module)[options.method] = options.returns
   }
 
   function resetMethodsForModule (
-    unstubbedMethods: Map<string, Function>,
+    unstubbedMethods: UnstubbedModule,
     moduleName: string
-  ) {
+  ): void {
     unstubbedMethods.forEach(function (
-      originalMethod: Function,
+      originalMethod: ThirdPartyModule,
       methodName: string
     ) {
-      updateRealModule({
-        module: moduleName,
-        method: methodName,
-        returns: originalMethod
-      })
+      if (isFunction(originalMethod)) {
+        updateRealModule({
+          module: moduleName,
+          method: methodName,
+          returns: originalMethod
+        })
+      }
     })
   }
 
-  function resetStubs () {
+  function resetStubs (): void {
     modulesBeforeTheyWereStubbed.forEach(resetMethodsForModule)
   }
 
-  function automaticallyStubModules () {
+  function addStubWithoutResetting (options: StubOptions): void {
+    saveOriginalMethod(options)
+    updateRealModule(options)
+  }
+
+  function automaticallyStubModules (): void {
     // just fs for now.
     forEachFunction(fs, function (propertyName) {
       addStubWithoutResetting({
@@ -110,12 +135,7 @@ export function Stub () {
     })
   }
 
-  function addStubWithoutResetting (options: StubOptions) {
-    saveOriginalMethod(options)
-    updateRealModule(options)
-  }
-
-  function addStub (options: StubOptions) {
+  function addStub (options: StubOptions): void {
     if (isInternalModule(options.module)) {
       throwInternalModuleError()
     }
@@ -125,14 +145,17 @@ export function Stub () {
 
     forEachFunction(fs, function (propertyName, property) {
       stubbedMethods.set(propertyName, property)
-      fs[propertyName] = unstubbedModule.get(propertyName)
+
+      if (unstubbedModule && unstubbedModule.has(propertyName)) {
+        require('fs')[propertyName] = unstubbedModule.get(propertyName)
+      }
     })
 
     addStubWithoutResetting(options)
 
-    for (let [methodName, method] of stubbedMethods) {
+    for (const [methodName, method] of stubbedMethods) {
       if (options.module !== 'fs' || methodName !== options.method) {
-        fs[methodName] = method
+        require('fs')[methodName] = method
       }
     }
   }
@@ -144,7 +167,6 @@ export function Stub () {
   }
 }
 
-Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
-  'You are attempting to access an un-stubbed dependency. Please use t.stub()'
+Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR = ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
 
-Stub.INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
+Stub.INTERNAL_STUB_ERROR = INTERNAL_STUB_ERROR
