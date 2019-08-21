@@ -12,7 +12,9 @@
   },
   "scripts": {
     "format": "prettier-standard \"{lib,test,bin}/**/*.js\"",
-    "test": "node lib/index.test.js"
+    "test": "node dist/index.test.ts",
+    "pretest": "npm run build",
+    "build": "tsc"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",
@@ -40,7 +42,8 @@
   "devDependencies": {
     "husky": "^3.0.3",
     "lint-staged": "^9.2.1",
-    "prettier-standard": "^9.1.1"
+    "prettier-standard": "^9.1.1",
+    "typescript": "^3.5.3"
   },
   "bin": {
     "javascript-testing-library": "./bin/javascript-testing-library.js"

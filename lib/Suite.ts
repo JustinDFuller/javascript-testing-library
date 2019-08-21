@@ -1,7 +1,15 @@
-const { Test } = require('./test')
+import { Test, TestOptions, TestFormatter } from './test'
 
-function Suite (options) {
-  let tests = new Set()
+interface SuiteOptions {
+  name: string;
+}
+
+export interface SuiteFormatter {
+  emitSuite(name: string): TestFormatter;
+}
+
+export function Suite (options: SuiteOptions) {
+  let tests: Set<TestOptions> = new Set()
 
   function isNameInvalid () {
     return !options || !options.name
@@ -17,12 +25,12 @@ function Suite (options) {
     }
   }
 
-  function logName (formatter) {
+  function logName (formatter: SuiteFormatter): TestFormatter {
     validateName()
     return formatter.emitSuite(options.name)
   }
 
-  async function runTests (testFormatter) {
+  async function runTests (testFormatter: TestFormatter) {
     for (let test of tests) {
       await Test(test, testFormatter)
     }
@@ -35,11 +43,11 @@ function Suite (options) {
   }
 
   return {
-    addTest (test) {
+    addTest (test: TestOptions) {
       tests.add(test)
       return this
     },
-    runTests (formatter) {
+    runTests (formatter: SuiteFormatter) {
       const testFormatter = logName(formatter)
       validateTests()
       return runTests(testFormatter)
@@ -51,6 +59,3 @@ Suite.NAME_REQUIRED_ERROR = 'Suite requires a name.'
 
 Suite.ONE_TEST_REQUIRED_ERROR = 'At least one test is required for each suite.'
 
-module.exports = {
-  Suite
-}

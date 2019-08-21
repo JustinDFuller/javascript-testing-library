@@ -1,6 +1,6 @@
-const { Suite } = require('./Suite')
-const { Suites } = require('./Suites')
-const { NoopFormatter } = require('./formatters/noop')
+import { Suite } from './Suite'
+import { Suites } from './Suites'
+import { NoopFormatter } from './formatters/noop'
 
 const suite = Suite({
   name: 'Suites'
@@ -9,7 +9,7 @@ const suite = Suite({
 suite.addTest({
   name: 'runs tests in a consistent order',
   async test (t) {
-    const order = []
+    const order: number[] = []
 
     await Suites({ formatter: NoopFormatter() }).runTests([
       {

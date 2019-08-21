@@ -1,7 +1,22 @@
-const { Assert } = require('./Assert')
-const { Stub } = require('./stub')
+import { Assert, AssertOptions } from './Assert'
+import { Stub, StubOptions } from './stub'
 
-function Test ({ name, test }, formatter) {
+export interface TestActions {
+  equal(options: AssertOptions): void;
+  stub(options: StubOptions): void;
+}
+
+export interface TestOptions {
+  readonly name: string;
+  test(t: TestActions): void | Promise<void>;
+}
+
+export interface TestFormatter {
+  emitTest(name: string): void;
+  emitError(error: Error): void;
+}
+
+export function Test ({ name, test }: TestOptions, formatter: TestFormatter): void | Promise<void> {
   if (!name) {
     throw new Error(Test.NAME_REQUIRED_ERROR)
   }
@@ -14,7 +29,7 @@ function Test ({ name, test }, formatter) {
     stub.resetStubs()
   }
 
-  function handleError (err) {
+  function handleError (err: Error) {
     formatter.emitError(err)
   }
 
@@ -40,6 +55,3 @@ function Test ({ name, test }, formatter) {
 
 Test.NAME_REQUIRED_ERROR = 'Each test must have a name.'
 
-module.exports = {
-  Test
-}

@@ -1,7 +1,7 @@
-const fs = require('fs')
+import fs from 'fs'
 
-const { Suite } = require('./Suite')
-const { Stub } = require('./Stub')
+import { Suite } from './Suite'
+import { Stub } from './Stub'
 
 const suite = Suite({
   name: 'Stub'
@@ -13,7 +13,7 @@ suite.addTest({
     t.stub({
       module: 'fs',
       method: 'readFile',
-      returns (file, options, callback) {
+      returns (file: string, _options: string, callback: (err: Error | null, res: string) => void) {
         return callback(null, `You are trying to read ${file}`)
       }
     })
@@ -39,7 +39,9 @@ suite.addTest({
     let error
 
     try {
-      fs.readFile()
+      fs.readFile('filepath', function () {
+        throw new Error('Should not be called')
+      })
     } catch (e) {
       error = e
     }

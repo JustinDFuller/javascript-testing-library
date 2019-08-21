@@ -1,5 +1,6 @@
-const { Suite } = require('./suite')
-const { Assert } = require('./Assert')
+import { Suite } from './Suite'
+import { Assert } from './Assert'
+import { TestActions } from './test'
 
 const suite = Suite({
   name: 'Assert'
@@ -7,7 +8,7 @@ const suite = Suite({
 
 suite.addTest({
   name: 'only provides a deep assertion',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -28,10 +29,11 @@ suite.addTest({
 
 suite.addTest({
   name: 'accepts an object as the only argument',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
+      // @ts-ignore: need to do an invalid call to Assert.equal to test the error handling.
       Assert().equal('expected', 'actual')
     } catch (e) {
       error = e
@@ -46,7 +48,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'does not allow expected to be a typeof',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {

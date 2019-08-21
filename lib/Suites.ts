@@ -1,13 +1,25 @@
-function Suites (options) {
+import { Suite } from './Suite'
+
+export interface SuitesFormatter {
+  emitFile(filePath: string): void;
+  end(): void;
+}
+
+interface SuiteOptions {
+  formatter: SuitesFormatter;
+  paths: string[];
+}
+
+export function Suites (options: SuiteOptions) {
   return {
-    async runTests (suites) {
+    async runTests (suites: Suite[]) {
       for (let { suite, path } of suites) {
         options.formatter.emitFile(path)
         await suite.runTests(options.formatter)
       }
     },
-    requireSuites (paths) {
-      return paths.map(function (path) {
+    requireSuites (paths: string[]) {
+      return paths.map(function (path: string) {
         return {
           suite: require(path).suite,
           path: require.resolve(path)
@@ -21,6 +33,3 @@ function Suites (options) {
   }
 }
 
-module.exports = {
-  Suites
-}
