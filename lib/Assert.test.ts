@@ -33,6 +33,7 @@ suite.addTest({
     let error
 
     try {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore: need to do an invalid call to Assert.equal to test the error handling.
       Assert().equal('expected', 'actual')
     } catch (e) {
