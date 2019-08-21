@@ -4,17 +4,20 @@ const chalk = require('chalk')
 const path = require('path')
 const ora = require('ora')
 
+import { TestFormatter } from '../Test'
+import { SuitesFormatter } from '../Suites'
+
 const POINTER = chalk.gray.dim(figures.pointer)
 
-function SpinnerFormatter () {
+function SpinnerFormatter (): SuitesFormatter & TestFormatter {
   const spinner = ora('Running tests.').start()
   spinner.color = 'gray'
 
   let testCount = 0
-  let file
-  let suite
-  let test
-  let nextSuite
+  let file: string
+  let suite: string
+  let test: string
+  let nextSuite: string
 
   function formatTest () {
     return `${suite} ${POINTER} ${test}`
@@ -47,12 +50,18 @@ function SpinnerFormatter () {
       suite = nextSuite
       spinner.start(`${nextSuite} ${POINTER} ${nextTest}`)
     },
-    emitError (error) {
+    emitError (error: Error): void {
+      let stack = ''
+
+      if (error && error.stack) {
+        stack = error.stack
+          .replace(file, chalk.black.bgYellow(file))
+          .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '')
+      }
+
       spinner.stopAndPersist({
         symbol: symbols.error,
-        text: `${formatTest()} \n\n${error.stack
-          .replace(file, chalk.black.bgYellow(file))
-          .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '')}\n`
+        text: `${formatTest()} \n\n${stack}\n`
       })
       process.exit(1)
     },

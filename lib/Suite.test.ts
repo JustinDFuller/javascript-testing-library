@@ -1,4 +1,4 @@
-const { Suite } = require('./Suite')
+import { Suite } from './Suite'
 const { NoopFormatter } = require('./formatters/noop')
 
 const suite = Suite({
@@ -12,7 +12,7 @@ suite.addTest({
 
     try {
       Suite({
-        tests () {}
+        name: ''
       }).runTests(NoopFormatter())
     } catch (e) {
       error = e

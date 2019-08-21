@@ -5,19 +5,21 @@
     }
   },
   "lint-staged": {
-    "{lib,test,bin}/**/*.js": [
+    "{lib,test,bin}/**/*.ts": [
       "prettier-standard",
       "git add"
     ]
   },
   "scripts": {
-    "format": "prettier-standard \"{lib,test,bin}/**/*.js\"",
-    "test": "node lib/index.test.js"
+    "format": "prettier-standard \"{lib,test,bin}/**/*.ts\"",
+    "test": "node dist/index.test.js",
+    "pretest": "npm run build",
+    "build": "tsc"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",
   "description": "A highly opinionated testing library for JavaScript",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JustinDFuller/javascript-testing-library.git"
@@ -40,7 +42,8 @@
   "devDependencies": {
     "husky": "^3.0.3",
     "lint-staged": "^9.2.1",
-    "prettier-standard": "^9.1.1"
+    "prettier-standard": "^9.1.1",
+    "typescript": "^3.5.3"
   },
   "bin": {
     "javascript-testing-library": "./bin/javascript-testing-library.js"

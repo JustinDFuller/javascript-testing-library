@@ -11,7 +11,12 @@ const TYPES = [
   'undefined'
 ]
 
-function AssertOptions (options) {
+export interface AssertOptions {
+  readonly expected: any
+  readonly actual: any
+}
+
+function AssertOptions (options: AssertOptions) {
   function isInvalid () {
     return typeof options !== 'object'
   }
@@ -41,7 +46,7 @@ function AssertOptions (options) {
   }
 }
 
-function Assert () {
+export function Assert () {
   let calls = 0
 
   function throwIfCalledMoreThanOnce () {
@@ -56,7 +61,7 @@ function Assert () {
         throw new Error(Assert.EQUAL_NOT_CALLED_ERROR)
       }
     },
-    equal (options) {
+    equal (options: AssertOptions) {
       AssertOptions(options).validate()
 
       calls++
@@ -76,7 +81,3 @@ Assert.INVALID_OPTIONS_ERROR =
 
 Assert.NO_TYPE_EXPECTED_ERROR =
   'You cannot use a typeof as the expected argument of t.equal().'
-
-module.exports = {
-  Assert
-}
