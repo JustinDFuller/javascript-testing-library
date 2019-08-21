@@ -22,7 +22,7 @@ suite.addTest({
       }
     })
 
-    const actual = await new Promise(function (resolve, reject) {
+    const actual = await new Promise(function (resolve, reject): void {
       fs.readFile('filename.jpg', 'utf8', function (err, res) {
         if (err) return reject(err)
         resolve(res)
