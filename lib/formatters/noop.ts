@@ -1,15 +1,17 @@
 import { TestFormatter } from '../Test'
 import { SuitesFormatter } from '../Suites'
 
+function noop (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+
 export function NoopFormatter (): SuitesFormatter & TestFormatter {
   return {
-    end () {},
-    emitFile () {},
+    end: noop,
+    emitFile: noop,
     emitError (err: Error): never {
       throw err
     },
-    emitTest () {},
-    emitSuite () {
+    emitTest: noop,
+    emitSuite (): SuitesFormatter & TestFormatter {
       return this
     }
   }

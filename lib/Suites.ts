@@ -13,7 +13,7 @@ interface SuiteOptions {
 export function Suites (options: SuiteOptions) {
   return {
     async runTests (suites: Suite[]) {
-      for (let { suite, path } of suites) {
+      for (const { suite, path } of suites) {
         options.formatter.emitFile(path)
         await suite.runTests(options.formatter)
       }

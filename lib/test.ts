@@ -27,12 +27,12 @@ export function Test (
   const assert = Assert()
   const stub = Stub()
 
-  function handleComplete () {
+  function handleComplete (): void {
     assert.throwIfNotCalledAtLeastOnce()
     stub.resetStubs()
   }
 
-  function handleError (err: Error) {
+  function handleError (err: Error): void {
     formatter.emitError(err)
   }
 

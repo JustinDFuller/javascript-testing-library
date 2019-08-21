@@ -1,8 +1,8 @@
-const symbols = require('log-symbols')
-const figures = require('figures')
-const chalk = require('chalk')
-const path = require('path')
-const ora = require('ora')
+import ora from 'ora'
+import path from 'path'
+import chalk from 'chalk'
+import figures from 'figures'
+import symbols from 'log-symbols'
 
 import { TestFormatter } from '../Test'
 import { SuitesFormatter } from '../Suites'
@@ -19,11 +19,11 @@ function SpinnerFormatter (): SuitesFormatter & TestFormatter {
   let test: string
   let nextSuite: string
 
-  function formatTest () {
+  function formatTest (): string {
     return `${suite} ${POINTER} ${test}`
   }
 
-  function printLastTest () {
+  function printLastTest (): void {
     spinner.stopAndPersist({
       symbol: symbols.success,
       text: formatTest()
@@ -31,15 +31,15 @@ function SpinnerFormatter (): SuitesFormatter & TestFormatter {
   }
 
   return {
-    emitFile (filePath) {
+    emitFile (filePath): void {
       file = filePath
     },
-    emitSuite (name) {
+    emitSuite (name): SuitesFormatter & TestFormatter {
       nextSuite = name
       spinner.text = name
       return this
     },
-    emitTest (nextTest) {
+    emitTest (nextTest): void {
       testCount++
 
       if (test) {
@@ -65,7 +65,7 @@ function SpinnerFormatter (): SuitesFormatter & TestFormatter {
       })
       process.exit(1)
     },
-    end () {
+    end (): void {
       printLastTest()
       spinner.stopAndPersist({
         symbol: symbols.success,

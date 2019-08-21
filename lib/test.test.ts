@@ -1,4 +1,4 @@
-import { Test } from './Test'
+import { Test, TestActions } from './Test'
 import { Suite } from './Suite'
 import { Assert } from './Assert'
 import { NoopFormatter } from './formatters/noop'
@@ -45,7 +45,12 @@ suite.addTest({
       Test(
         {
           name: '',
-          test () {}
+          test (t: TestActions) {
+            t.equal({
+              expected: 1,
+              actual: 2
+            })
+          }
         },
         NoopFormatter()
       )
@@ -62,14 +67,14 @@ suite.addTest({
 
 suite.addTest({
   name: 'throws an error if t.equal is not called at least once',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
       Test(
         {
           name: '(not calling t.equal at least once)',
-          test () {}
+          test () {} // eslint-disable-line @typescript-eslint/no-empty-function
         },
         NoopFormatter()
       )
@@ -123,7 +128,8 @@ suite.addTest({
     let error
 
     try {
-      await new Promise(function (_resolve, reject) {
+      // eslint-disable-next-line promise/param-names
+      await new Promise(function (_resolve, reject): void {
         setTimeout(function () {
           reject(new Error('Expected error.'))
         })

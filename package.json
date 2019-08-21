@@ -7,14 +7,17 @@
   "lint-staged": {
     "{lib,test,bin}/**/*.ts": [
       "prettier-standard",
+      "npm run lint:base",
       "git add"
     ]
   },
   "scripts": {
     "format": "prettier-standard \"{lib,test,bin}/**/*.ts\"",
     "test": "node dist/index.test.js",
-    "pretest": "npm run build",
-    "build": "tsc"
+    "build": "tsc",
+    "lint:base": "eslint --fix",
+    "lint": "npm run lint:base \"lib/**/*.ts\"",
+    "pretest": "npm run build"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",
@@ -40,6 +43,15 @@
   },
   "homepage": "https://github.com/JustinDFuller/javascript-testing-library#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
+    "eslint": "^6.2.1",
+    "eslint-config-prettier": "^6.1.0",
+    "eslint-config-standard": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "husky": "^3.0.3",
     "lint-staged": "^9.2.1",
     "prettier-standard": "^9.1.1",
