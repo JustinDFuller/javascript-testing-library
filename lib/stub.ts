@@ -59,21 +59,21 @@ export function Stub () {
     }
 
     const unstubbedModule = new Map()
-    modulesBeforeTheyWereStubbed.set(module, unstubbedModule)
+    modulesBeforeTheyWereStubbed.set(moduleName, unstubbedModule)
     return unstubbedModule
   }
 
-  function saveOriginalMethod ({ module, method }: StubOptions) {
-    const realMethod = require(module)[method]
+  function saveOriginalMethod (options: StubOptions) {
+    const realMethod = require(options.module)[options.method]
 
     if (isUnstubbedMethod(realMethod)) {
-      const unstubbedModule = getUnstubbedModule(module)
-      unstubbedModule.set(method, realMethod)
+      const unstubbedModule = getUnstubbedModule(options.module)
+      unstubbedModule.set(options.method, realMethod)
     }
   }
 
-  function updateRealModule ({ module, method, returns }: StubOptions) {
-    require(module)[method] = returns
+  function updateRealModule (options: StubOptions) {
+    require(options.module)[options.method] = options.returns
   }
 
   function resetMethodsForModule (unstubbedMethods: Map<string, Function>, moduleName: string) {

@@ -39,8 +39,8 @@ suite.addTest({
     let error
 
     try {
-      fs.readFile('filepath', function () {
-        throw new Error('Should not be called')
+      fs.readFile('filepath', function (err) {
+        throw err
       })
     } catch (e) {
       error = e

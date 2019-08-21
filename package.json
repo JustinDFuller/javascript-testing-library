@@ -12,7 +12,7 @@
   },
   "scripts": {
     "format": "prettier-standard \"{lib,test,bin}/**/*.js\"",
-    "test": "node dist/index.test.ts",
+    "test": "node dist/index.test.js",
     "pretest": "npm run build",
     "build": "tsc"
   },

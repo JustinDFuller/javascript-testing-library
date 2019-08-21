@@ -1,13 +1,15 @@
+import { TestFormatter } from '../Test'
 import { SuitesFormatter } from '../Suites'
 
-export function NoopFormatter (): SuitesFormatter {
+export function NoopFormatter (): SuitesFormatter & TestFormatter {
   return {
-    emitError (err) {
+    end() {},
+    emitFile () {},
+    emitError (err: Error): never {
       throw err
     },
-    emitTest (testName) {},
-    emitFile () {},
-    emitSuite (suiteName) {
+    emitTest () {},
+    emitSuite () {
       return this
     }
   }

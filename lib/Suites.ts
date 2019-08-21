@@ -1,6 +1,6 @@
-import { Suite } from './Suite'
+import { Suite, SuiteFormatter } from './Suite'
 
-export interface SuitesFormatter {
+export interface SuitesFormatter extends SuiteFormatter {
   emitFile(filePath: string): void;
   end(): void;
 }

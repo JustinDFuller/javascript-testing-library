@@ -1,7 +1,7 @@
-const { Suite } = require('./Suite')
-const { Assert } = require('./Assert')
-const { Test } = require('./Test')
-const { NoopFormatter } = require('./formatters/noop')
+import { Test } from './Test'
+import { Suite } from './Suite'
+import { Assert } from './Assert'
+import { NoopFormatter } from './formatters/noop'
 
 const suite = Suite({
   name: 'Test'
@@ -42,9 +42,13 @@ suite.addTest({
     let error
 
     try {
-      Test({
-        test () {}
-      })
+      Test(
+          {
+          name: '',
+          test () {}
+        },
+        NoopFormatter()
+      )
     } catch (e) {
       error = e
     }
@@ -119,7 +123,7 @@ suite.addTest({
     let error
 
     try {
-      await new Promise(function (resolve, reject) {
+      await new Promise(function (_resolve, reject) {
         setTimeout(function () {
           reject(new Error('Expected error.'))
         })
