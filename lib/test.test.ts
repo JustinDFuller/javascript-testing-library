@@ -43,7 +43,7 @@ suite.addTest({
 
     try {
       Test(
-          {
+        {
           name: '',
           test () {}
         },

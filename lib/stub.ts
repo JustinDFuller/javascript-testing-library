@@ -1,20 +1,23 @@
 const fs = require('fs')
 
 export interface StubOptions {
-  module: string;
-  method: string;
-  returns: Function;
+  module: string
+  method: string
+  returns: Function
 }
 
 interface ThirdPartyModule {
-  [propName: string]: any;
+  [propName: string]: any
 }
 
 function isFunction (value: any) {
   return typeof value === 'function'
 }
 
-function forEachFunction (object: ThirdPartyModule, callback: (propertyName: string, property: any) => void) {
+function forEachFunction (
+  object: ThirdPartyModule,
+  callback: (propertyName: string, property: any) => void
+) {
   return Object.keys(object).forEach(function (propertyName) {
     if (isFunction(object[propertyName])) {
       callback(propertyName, object[propertyName])
@@ -76,8 +79,14 @@ export function Stub () {
     require(options.module)[options.method] = options.returns
   }
 
-  function resetMethodsForModule (unstubbedMethods: Map<string, Function>, moduleName: string) {
-    unstubbedMethods.forEach(function (originalMethod: Function, methodName: string) {
+  function resetMethodsForModule (
+    unstubbedMethods: Map<string, Function>,
+    moduleName: string
+  ) {
+    unstubbedMethods.forEach(function (
+      originalMethod: Function,
+      methodName: string
+    ) {
       updateRealModule({
         module: moduleName,
         method: methodName,
@@ -139,4 +148,3 @@ Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
   'You are attempting to access an un-stubbed dependency. Please use t.stub()'
 
 Stub.INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
-

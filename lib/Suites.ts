@@ -1,13 +1,13 @@
 import { Suite, SuiteFormatter } from './Suite'
 
 export interface SuitesFormatter extends SuiteFormatter {
-  emitFile(filePath: string): void;
-  end(): void;
+  emitFile(filePath: string): void
+  end(): void
 }
 
 interface SuiteOptions {
-  formatter: SuitesFormatter;
-  paths: string[];
+  formatter: SuitesFormatter
+  paths: string[]
 }
 
 export function Suites (options: SuiteOptions) {
@@ -32,4 +32,3 @@ export function Suites (options: SuiteOptions) {
     }
   }
 }
-

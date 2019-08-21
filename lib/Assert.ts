@@ -12,8 +12,8 @@ const TYPES = [
 ]
 
 export interface AssertOptions {
-  readonly expected: any;
-  readonly actual: any;
+  readonly expected: any
+  readonly actual: any
 }
 
 function AssertOptions (options: AssertOptions) {
@@ -81,4 +81,3 @@ Assert.INVALID_OPTIONS_ERROR =
 
 Assert.NO_TYPE_EXPECTED_ERROR =
   'You cannot use a typeof as the expected argument of t.equal().'
-

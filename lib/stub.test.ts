@@ -13,7 +13,11 @@ suite.addTest({
     t.stub({
       module: 'fs',
       method: 'readFile',
-      returns (file: string, _options: string, callback: (err: Error | null, res: string) => void) {
+      returns (
+        file: string,
+        _options: string,
+        callback: (err: Error | null, res: string) => void
+      ) {
         return callback(null, `You are trying to read ${file}`)
       }
     })

@@ -3,7 +3,7 @@ import { SuitesFormatter } from '../Suites'
 
 export function NoopFormatter (): SuitesFormatter & TestFormatter {
   return {
-    end() {},
+    end () {},
     emitFile () {},
     emitError (err: Error): never {
       throw err
@@ -14,4 +14,3 @@ export function NoopFormatter (): SuitesFormatter & TestFormatter {
     }
   }
 }
-

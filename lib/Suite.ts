@@ -1,11 +1,11 @@
 import { Test, TestOptions, TestFormatter } from './test'
 
 interface SuiteOptions {
-  name: string;
+  name: string
 }
 
 export interface SuiteFormatter {
-  emitSuite(name: string): TestFormatter;
+  emitSuite(name: string): TestFormatter
 }
 
 export function Suite (options: SuiteOptions) {
@@ -58,4 +58,3 @@ export function Suite (options: SuiteOptions) {
 Suite.NAME_REQUIRED_ERROR = 'Suite requires a name.'
 
 Suite.ONE_TEST_REQUIRED_ERROR = 'At least one test is required for each suite.'
-

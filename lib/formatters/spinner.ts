@@ -56,7 +56,7 @@ function SpinnerFormatter (): SuitesFormatter & TestFormatter {
       if (error && error.stack) {
         stack = error.stack
           .replace(file, chalk.black.bgYellow(file))
-          .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '') 
+          .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '')
       }
 
       spinner.stopAndPersist({
