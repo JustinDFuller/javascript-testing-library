@@ -9,7 +9,7 @@ import { SuitesFormatter } from '../Suites'
 
 const POINTER = chalk.gray.dim(figures.pointer)
 
-function SpinnerFormatter (): SuitesFormatter & TestFormatter {
+export function SpinnerFormatter (): SuitesFormatter & TestFormatter {
   const spinner = ora('Running tests.').start()
   spinner.color = 'gray'
 
@@ -74,8 +74,4 @@ function SpinnerFormatter (): SuitesFormatter & TestFormatter {
       process.exit(0)
     }
   }
-}
-
-module.exports = {
-  SpinnerFormatter
 }

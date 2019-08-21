@@ -1,5 +1,5 @@
-const { Suites } = require('./Suites')
-const { SpinnerFormatter } = require('./formatters/spinner')
+import { Suites } from './Suites'
+import { SpinnerFormatter } from './formatters/spinner'
 
 const formatter = SpinnerFormatter()
 
