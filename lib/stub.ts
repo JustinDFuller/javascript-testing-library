@@ -1,5 +1,10 @@
 import fs from 'fs'
 
+const ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
+  'You are attempting to access an un-stubbed dependency. Please use t.stub()'
+
+const INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
+
 type ThirdPartyKey = string
 type ThirdPartyProperty = object | number | boolean | string | Function
 
@@ -19,12 +24,6 @@ interface Stub {
   automaticallyStubModules(): void
 }
 
-const ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
-  'You are attempting to access an un-stubbed dependency. Please use t.stub()'
-
-const INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isFunction (value: ThirdPartyProperty): value is Function {
   return typeof value === 'function'
 }
@@ -34,8 +33,10 @@ function forEachFunction (
   callback: (propertyName: ThirdPartyKey, property: Function) => void
 ): void {
   Object.keys(object).forEach(function (propertyName) {
-    if (isFunction(object[propertyName])) {
-      callback(propertyName, object[propertyName] as Function)
+    const property = object[propertyName]
+
+    if (isFunction(property)) {
+      callback(propertyName, property)
     }
   })
 }
@@ -68,28 +69,64 @@ function isInternalModule (moduleName: string): boolean {
   return moduleName.includes('.')
 }
 
-type UnstubbedModule = Map<string, ThirdPartyModule>
+type UnstubbedModule = Map<string, ThirdPartyProperty>
 type UnstubbedModules = Map<string, UnstubbedModule>
 
-export function Stub (): Stub {
+interface UnstubbedModuleHandler {
+  getModule(moduleName: string): UnstubbedModule
+  forEach(
+    callback: (unstubbedMethods: UnstubbedModule, moduleName: string) => void
+  ): void
+  saveMethod(
+    moduleName: string,
+    methodName: string,
+    realMethod: ThirdPartyModule
+  ): void
+}
+
+function UnstubbedModules (): UnstubbedModuleHandler {
   const modulesBeforeTheyWereStubbed: UnstubbedModules = new Map()
 
-  function getUnstubbedModule (moduleName: string): UnstubbedModule {
+  function getModule (moduleName: string): UnstubbedModule {
     if (modulesBeforeTheyWereStubbed.has(moduleName)) {
       return modulesBeforeTheyWereStubbed.get(moduleName) as UnstubbedModule
     }
 
-    const unstubbedModule = new Map()
+    const unstubbedModule: UnstubbedModule = new Map()
     modulesBeforeTheyWereStubbed.set(moduleName, unstubbedModule)
     return unstubbedModule
   }
+
+  function forEach (
+    callback: (unstubbedMethods: UnstubbedModule, moduleName: string) => void
+  ): void {
+    modulesBeforeTheyWereStubbed.forEach(callback)
+  }
+
+  function saveMethod (
+    moduleName: string,
+    methodName: string,
+    realMethod: ThirdPartyModule
+  ): void {
+    const unstubbedModule = getModule(moduleName)
+    unstubbedModule.set(methodName, realMethod)
+  }
+
+  return {
+    getModule,
+    saveMethod,
+    forEach
+  }
+}
+
+export function Stub (): Stub {
+  const unstubbedModules: UnstubbedModuleHandler = UnstubbedModules()
 
   function saveOriginalMethod (options: StubOptions): void {
     const realMethod = require(options.module)[options.method]
 
     if (isUnstubbedMethod(realMethod)) {
-      const unstubbedModule = getUnstubbedModule(options.module)
-      unstubbedModule.set(options.method, realMethod)
+      unstubbedModules.saveMethod(options.module, options.method, realMethod)
     }
   }
 
@@ -102,7 +139,7 @@ export function Stub (): Stub {
     moduleName: string
   ): void {
     unstubbedMethods.forEach(function (
-      originalMethod: ThirdPartyModule,
+      originalMethod: ThirdPartyProperty,
       methodName: string
     ) {
       if (isFunction(originalMethod)) {
@@ -116,7 +153,7 @@ export function Stub (): Stub {
   }
 
   function resetStubs (): void {
-    modulesBeforeTheyWereStubbed.forEach(resetMethodsForModule)
+    unstubbedModules.forEach(resetMethodsForModule)
   }
 
   function addStubWithoutResetting (options: StubOptions): void {
@@ -141,7 +178,7 @@ export function Stub (): Stub {
     }
 
     const stubbedMethods: Map<string, Function> = new Map()
-    const unstubbedModule = modulesBeforeTheyWereStubbed.get('fs')
+    const unstubbedModule = unstubbedModules.getModule('fs')
 
     forEachFunction(fs, function (propertyName, property) {
       stubbedMethods.set(propertyName, property)
