@@ -25,7 +25,7 @@ export function Test (
   }
 
   const assert = Assert()
-  const stub = Stub()
+  const stub = new Stub()
 
   function handleComplete (): void {
     assert.throwIfNotCalledAtLeastOnce()

@@ -62,6 +62,7 @@
     "javascript-testing-library": "./bin/javascript-testing-library.js"
   },
   "dependencies": {
+    "autobind-decorator": "^2.4.0",
     "figures": "^3.0.0",
     "log-symbols": "^3.0.0",
     "ora": "^3.4.0"

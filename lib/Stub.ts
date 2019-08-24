@@ -1,4 +1,5 @@
 import fs from 'fs'
+import { boundMethod } from 'autobind-decorator'
 
 const ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
   'You are attempting to access an un-stubbed dependency. Please use t.stub()'
@@ -16,12 +17,6 @@ export interface StubOptions {
   module: string
   method: string
   returns: Function
-}
-
-interface Stub {
-  resetStubs(): void
-  add(options: StubOptions): void
-  init(): void
 }
 
 function isFunction (value: ThirdPartyProperty): value is Function {
@@ -57,7 +52,9 @@ function throwUnstubbedDependencyError (moduleName: string, key: string) {
   }
 }
 
-function isUnstubbedMethod (property: ThirdPartyProperty): property is Function {
+function isUnstubbedMethod (
+  property: ThirdPartyProperty
+): property is Function {
   return isFunction(property) && property.name !== 'unstubbedDependency'
 }
 
@@ -77,11 +74,7 @@ interface UnstubbedModuleHandler {
   forEach(
     callback: (unstubbedMethods: UnstubbedModule, moduleName: string) => void
   ): void
-  saveMethod(
-    moduleName: string,
-    methodName: string,
-    realMethod: Function
-  ): void
+  saveMethod(moduleName: string, methodName: string, realMethod: Function): void
 }
 
 function UnstubbedModules (): UnstubbedModuleHandler {
@@ -122,65 +115,69 @@ function UnstubbedModules (): UnstubbedModuleHandler {
 class Module {
   private module: ThirdPartyModule
 
-  constructor(moduleName: string) {
+  constructor (moduleName: string) {
     this.module = require(moduleName)
   }
 
-  setMethod(methodName: string, returns: Function): void {
+  setMethod (methodName: string, returns: Function): void {
     this.module[methodName] = returns
   }
 
-  getMethod(methodName: string): ThirdPartyProperty {
+  getMethod (methodName: string): ThirdPartyProperty {
     return this.module[methodName]
   }
 }
 
-export function Stub (): Stub {
-  const unstubbedModules: UnstubbedModuleHandler = UnstubbedModules()
+export class Stub {
+  static ACCESSING_UNSTUBBED_DEPENDENCY_ERROR = ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+  static INTERNAL_STUB_ERROR = INTERNAL_STUB_ERROR
 
-  function saveOriginalMethod (options: StubOptions): void {
+  private readonly unstubbedModules: UnstubbedModuleHandler
+
+  constructor () {
+    this.unstubbedModules = UnstubbedModules()
+  }
+
+  private saveOriginalMethod (options: StubOptions): void {
     const realMethod = new Module(options.module).getMethod(options.method)
 
     if (isUnstubbedMethod(realMethod)) {
-      unstubbedModules.saveMethod(options.module, options.method, realMethod)
+      this.unstubbedModules.saveMethod(
+        options.module,
+        options.method,
+        realMethod
+      )
     }
   }
 
-  function updateRealModule (options: StubOptions): void {
+  private updateRealModule (options: StubOptions): void {
     new Module(options.module).setMethod(options.method, options.returns)
   }
 
-  function resetMethodsForModule (
+  private resetMethodsForModule (
     unstubbedMethods: UnstubbedModule,
     moduleName: string
   ): void {
-    unstubbedMethods.forEach(function (
-      originalMethod: ThirdPartyProperty,
-      methodName: string
-    ) {
-      if (isFunction(originalMethod)) {
-        updateRealModule({
+    unstubbedMethods.forEach((returns: ThirdPartyProperty, method: string) => {
+      if (isFunction(returns)) {
+        this.updateRealModule({
           module: moduleName,
-          method: methodName,
-          returns: originalMethod
+          method,
+          returns
         })
       }
     })
   }
 
-  function resetStubs (): void {
-    unstubbedModules.forEach(resetMethodsForModule)
+  private addWithoutResetting (options: StubOptions): void {
+    this.saveOriginalMethod(options)
+    this.updateRealModule(options)
   }
 
-  function addWithoutResetting (options: StubOptions): void {
-    saveOriginalMethod(options)
-    updateRealModule(options)
-  }
-
-  function init (): void {
+  init (): void {
     // just fs for now.
-    forEachFunction(fs, function (propertyName) {
-      addWithoutResetting({
+    forEachFunction(fs, (propertyName: string) => {
+      this.addWithoutResetting({
         module: 'fs',
         method: propertyName,
         returns: throwUnstubbedDependencyError('fs', propertyName)
@@ -188,13 +185,14 @@ export function Stub (): Stub {
     })
   }
 
-  function add (options: StubOptions): void {
+  @boundMethod
+  add (options: StubOptions): void {
     if (isInternalModule(options.module)) {
       throwInternalModuleError()
     }
 
     const stubbedMethods: Map<string, Function> = new Map()
-    const unstubbedModule = unstubbedModules.getModule('fs')
+    const unstubbedModule = this.unstubbedModules.getModule('fs')
 
     forEachFunction(fs, function (propertyName, property) {
       stubbedMethods.set(propertyName, property)
@@ -205,7 +203,7 @@ export function Stub (): Stub {
       }
     })
 
-    addWithoutResetting(options)
+    this.addWithoutResetting(options)
 
     for (const [methodName, method] of stubbedMethods) {
       if (options.module !== 'fs' || methodName !== options.method) {
@@ -214,13 +212,7 @@ export function Stub (): Stub {
     }
   }
 
-  return {
-    resetStubs,
-    add,
-    init
+  resetStubs (): void {
+    this.unstubbedModules.forEach(this.resetMethodsForModule.bind(this))
   }
 }
-
-Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR = ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
-
-Stub.INTERNAL_STUB_ERROR = INTERNAL_STUB_ERROR
