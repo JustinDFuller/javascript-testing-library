@@ -17,7 +17,8 @@
     "build": "tsc",
     "lint:base": "eslint --fix",
     "lint": "npm run lint:base \"lib/**/*.ts\"",
-    "pretest": "npm run build"
+    "pretest": "npm run build",
+    "prelint": "npm run test"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",

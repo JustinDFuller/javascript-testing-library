@@ -17,10 +17,10 @@ export interface TestFormatter {
 }
 
 export function Test (
-  { name, test }: TestOptions,
+  options: TestOptions,
   formatter: TestFormatter
 ): void | Promise<void> {
-  if (!name) {
+  if (!options.name) {
     throw new Error(Test.NAME_REQUIRED_ERROR)
   }
 
@@ -36,14 +36,14 @@ export function Test (
     formatter.emitError(err)
   }
 
-  stub.automaticallyStubModules()
+  stub.init()
 
-  formatter.emitTest(name)
+  formatter.emitTest(options.name)
 
   try {
-    const promise = test({
+    const promise = options.test({
       equal: assert.equal,
-      stub: stub.addStub
+      stub: stub.add
     })
 
     if (promise && promise.then) {

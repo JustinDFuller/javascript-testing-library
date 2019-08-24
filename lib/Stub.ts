@@ -6,7 +6,7 @@ const ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
 const INTERNAL_STUB_ERROR = 'You are attempting to stub an internal module.'
 
 type ThirdPartyKey = string
-type ThirdPartyProperty = object | number | boolean | string | Function
+type ThirdPartyProperty = any // eslint-disable-line @typescript-eslint/no-explicit-any
 
 interface ThirdPartyModule {
   [propName: string]: ThirdPartyProperty
@@ -20,8 +20,8 @@ export interface StubOptions {
 
 interface Stub {
   resetStubs(): void
-  addStub(options: StubOptions): void
-  automaticallyStubModules(): void
+  add(options: StubOptions): void
+  init(): void
 }
 
 function isFunction (value: ThirdPartyProperty): value is Function {
@@ -57,8 +57,8 @@ function throwUnstubbedDependencyError (moduleName: string, key: string) {
   }
 }
 
-function isUnstubbedMethod (method: Function): boolean {
-  return method.name !== 'unstubbedDependency'
+function isUnstubbedMethod (property: ThirdPartyProperty): property is Function {
+  return isFunction(property) && property.name !== 'unstubbedDependency'
 }
 
 function throwInternalModuleError (): never {
@@ -80,7 +80,7 @@ interface UnstubbedModuleHandler {
   saveMethod(
     moduleName: string,
     methodName: string,
-    realMethod: ThirdPartyModule
+    realMethod: Function
   ): void
 }
 
@@ -106,7 +106,7 @@ function UnstubbedModules (): UnstubbedModuleHandler {
   function saveMethod (
     moduleName: string,
     methodName: string,
-    realMethod: ThirdPartyModule
+    realMethod: Function
   ): void {
     const unstubbedModule = getModule(moduleName)
     unstubbedModule.set(methodName, realMethod)
@@ -119,11 +119,27 @@ function UnstubbedModules (): UnstubbedModuleHandler {
   }
 }
 
+class Module {
+  private module: ThirdPartyModule
+
+  constructor(moduleName: string) {
+    this.module = require(moduleName)
+  }
+
+  setMethod(methodName: string, returns: Function): void {
+    this.module[methodName] = returns
+  }
+
+  getMethod(methodName: string): ThirdPartyProperty {
+    return this.module[methodName]
+  }
+}
+
 export function Stub (): Stub {
   const unstubbedModules: UnstubbedModuleHandler = UnstubbedModules()
 
   function saveOriginalMethod (options: StubOptions): void {
-    const realMethod = require(options.module)[options.method]
+    const realMethod = new Module(options.module).getMethod(options.method)
 
     if (isUnstubbedMethod(realMethod)) {
       unstubbedModules.saveMethod(options.module, options.method, realMethod)
@@ -131,7 +147,7 @@ export function Stub (): Stub {
   }
 
   function updateRealModule (options: StubOptions): void {
-    require(options.module)[options.method] = options.returns
+    new Module(options.module).setMethod(options.method, options.returns)
   }
 
   function resetMethodsForModule (
@@ -156,15 +172,15 @@ export function Stub (): Stub {
     unstubbedModules.forEach(resetMethodsForModule)
   }
 
-  function addStubWithoutResetting (options: StubOptions): void {
+  function addWithoutResetting (options: StubOptions): void {
     saveOriginalMethod(options)
     updateRealModule(options)
   }
 
-  function automaticallyStubModules (): void {
+  function init (): void {
     // just fs for now.
     forEachFunction(fs, function (propertyName) {
-      addStubWithoutResetting({
+      addWithoutResetting({
         module: 'fs',
         method: propertyName,
         returns: throwUnstubbedDependencyError('fs', propertyName)
@@ -172,7 +188,7 @@ export function Stub (): Stub {
     })
   }
 
-  function addStub (options: StubOptions): void {
+  function add (options: StubOptions): void {
     if (isInternalModule(options.module)) {
       throwInternalModuleError()
     }
@@ -182,25 +198,26 @@ export function Stub (): Stub {
 
     forEachFunction(fs, function (propertyName, property) {
       stubbedMethods.set(propertyName, property)
+      const method = unstubbedModule.get(propertyName)
 
-      if (unstubbedModule && unstubbedModule.has(propertyName)) {
-        require('fs')[propertyName] = unstubbedModule.get(propertyName)
+      if (isFunction(method)) {
+        new Module('fs').setMethod(propertyName, method)
       }
     })
 
-    addStubWithoutResetting(options)
+    addWithoutResetting(options)
 
     for (const [methodName, method] of stubbedMethods) {
       if (options.module !== 'fs' || methodName !== options.method) {
-        require('fs')[methodName] = method
+        new Module('fs').setMethod(methodName, method)
       }
     }
   }
 
   return {
-    automaticallyStubModules,
     resetStubs,
-    addStub
+    add,
+    init
   }
 }
 
