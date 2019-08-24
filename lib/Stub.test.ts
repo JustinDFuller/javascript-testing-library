@@ -22,15 +22,39 @@ suite.addTest({
       }
     })
 
-    const actual = await new Promise(function (resolve, reject): void {
+    t.stub({
+      module: 'fs',
+      method: 'readdir',
+      returns (
+        _directory: string,
+        callback: (err: Error | null, files: string[]) => void
+      ) {
+        return callback(null, ['file in dir'])
+      }
+    })
+
+    let actual = []
+
+    const file = await new Promise(function (resolve, reject): void {
       fs.readFile('filename.jpg', 'utf8', function (err, res) {
         if (err) return reject(err)
         resolve(res)
       })
     })
 
+    actual.push(file)
+
+    const dir = await new Promise(function (resolve, reject): void {
+      fs.readdir('some_dir', function (err, res) {
+        if (err) return reject(err)
+        resolve(res)
+      })
+    })
+
+    actual = actual.concat(dir)
+
     t.equal({
-      expected: 'You are trying to read filename.jpg',
+      expected: ['You are trying to read filename.jpg', 'file in dir'],
       actual
     })
   }
