@@ -100,22 +100,6 @@ class Module {
   getMethod (methodName: string): Function {
     return this.module[methodName]
   }
-
-  getCurrentMethods (): Map<string, Function> {
-    const currentMethods: Map<string, Function> = new Map()
-
-    forEachFunction(this.module, (propertyName, property) => {
-      currentMethods.set(propertyName, property)
-    })
-
-    return currentMethods
-  }
-
-  replaceUnstubbedMethod (methodName: string, method: Returns): void {
-    if (!(this.getMethod(methodName) as Returns).isStub) {
-      this.setMethod(methodName, method)
-    }
-  }
 }
 
 type UnstubbedModule = Map<string, ThirdPartyProperty>
@@ -217,15 +201,10 @@ export class Stub {
     })
   }
 
-  private addWithoutResetting (options: StubOptions): void {
-    this.saveOriginalMethod(options)
-    this.updateRealModule(options)
-  }
-
   init (): void {
     // just fs for now.
     forEachFunction(fs, (propertyName: string) => {
-      this.addWithoutResetting({
+      this.add({
         module: 'fs',
         method: propertyName,
         returns: new UnstubbedDependency('fs', propertyName).throwUnstubbedError
@@ -235,19 +214,8 @@ export class Stub {
 
   @boundMethod
   add (options: StubOptions): void {
-    const moduleToStub = new Module(options.module)
-    const currentMethods = moduleToStub.getCurrentMethods()
-
-    forEachFunction(fs, propertyName => {
-      this.unstubbedModules.restoreOriginalFunction('fs', propertyName)
-    })
-
-    options.returns.isStub = true
-    this.addWithoutResetting(options)
-
-    for (const [methodName, method] of currentMethods) {
-      new Module('fs').replaceUnstubbedMethod(methodName, method)
-    }
+    this.saveOriginalMethod(options)
+    this.updateRealModule(options)
   }
 
   resetStubs (): void {

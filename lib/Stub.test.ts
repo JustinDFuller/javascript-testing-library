@@ -1,4 +1,5 @@
 import fs from 'fs'
+import os from 'os'
 
 import { Suite } from './Suite'
 import { Stub } from './Stub'
@@ -33,7 +34,17 @@ suite.addTest({
       }
     })
 
+    t.stub({
+      module: 'os',
+      method: 'platform',
+      returns () {
+        return 'test_platform'
+      }
+    })
+
     let actual = []
+
+    actual.push(os.platform())
 
     const file = await new Promise(function (resolve, reject): void {
       fs.readFile('filename.jpg', 'utf8', function (err, res) {
@@ -54,7 +65,11 @@ suite.addTest({
     actual = actual.concat(dir)
 
     t.equal({
-      expected: ['You are trying to read filename.jpg', 'file in dir'],
+      expected: [
+        'test_platform',
+        'You are trying to read filename.jpg',
+        'file in dir'
+      ],
       actual
     })
   }
