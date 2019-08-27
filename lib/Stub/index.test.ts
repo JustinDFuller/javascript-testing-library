@@ -1,7 +1,8 @@
 import fs from 'fs'
 
 import { Suite } from '../Suite'
-import { Stub } from './'
+import { Module } from './Module'
+import { UnstubbedDependency } from './UnstubbedDependency'
 
 const suite = Suite({
   name: 'Stub'
@@ -51,7 +52,9 @@ suite.addTest({
     }
 
     t.equal({
-      expected: `${Stub.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR} fs::readFile`,
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } fs::readFile`,
       actual: error.message
     })
   }
@@ -75,7 +78,7 @@ suite.addTest({
     }
 
     t.equal({
-      expected: Stub.INTERNAL_STUB_ERROR,
+      expected: Module.INTERNAL_STUB_ERROR,
       actual: error.message
     })
   }

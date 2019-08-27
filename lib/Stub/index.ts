@@ -1,7 +1,6 @@
 import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
-import { UnstubbedDependency } from './UnstubbedDependency'
 
 export interface StubOptions {
   module: string
@@ -10,11 +9,6 @@ export interface StubOptions {
 }
 
 export class Stub {
-  static ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =
-    UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
-
-  static INTERNAL_STUB_ERROR = Module.INTERNAL_STUB_ERROR
-
   private readonly stubbedModules: Map<string, Module>
 
   constructor () {
@@ -32,16 +26,24 @@ export class Stub {
     return this.getModule(moduleName)
   }
 
-  init (): void {
+  @boundMethod
+  init (): Stub {
     this.getModule('fs').initializeAllMethods()
-  }
 
-  resetStubs (): void {
-    this.stubbedModules.forEach(mod => mod.reset())
+    return this
   }
 
   @boundMethod
-  add (options: StubOptions): void {
+  resetStubs (): Stub {
+    this.stubbedModules.forEach(mod => mod.reset())
+
+    return this
+  }
+
+  @boundMethod
+  add (options: StubOptions): Stub {
     this.getModule(options.module).swapMethod(options.method, options.returns)
+
+    return this
   }
 }
