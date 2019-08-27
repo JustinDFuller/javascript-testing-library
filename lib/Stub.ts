@@ -57,11 +57,13 @@ class UnstubbedDependency {
 class Module {
   private readonly moduleName: string
   private readonly module: ThirdPartyModule
+  private readonly cachedMethods: Map<string, Returns>
 
   constructor (moduleName: string) {
     this.moduleName = moduleName
     this.validate()
     this.module = require(moduleName)
+    this.cachedMethods = new Map()
   }
 
   private throwInternalModuleError (): never {
@@ -78,15 +80,30 @@ class Module {
     }
   }
 
-  setMethod (methodName: string, returns: Function): void {
-    this.module[methodName] = returns
+  private isUnstubbedMethod (method: ThirdPartyProperty): method is Function {
+    return isFunction(method) && method.name !== 'throwUnstubbedError'
   }
 
-  getMethod (methodName: string): Function {
+  private setMethod (methodName: string, returns: Function): Module {
+    this.module[methodName] = returns
+    return this
+  }
+
+  private getMethod (methodName: string): Function {
     return this.module[methodName]
   }
 
-  initializeAllMethods (): void {
+  private saveOriginalMethod (methodName: string): Module {
+    const realMethod = this.getMethod(methodName)
+
+    if (this.isUnstubbedMethod(realMethod)) {
+      this.cachedMethods.set(methodName, realMethod)
+    }
+
+    return this
+  }
+
+  initializeAllMethods (): Module {
     Object.keys(this.module).forEach(propertyName => {
       const property = this.getMethod(propertyName)
 
@@ -98,56 +115,25 @@ class Module {
         )
       }
     })
-  }
-}
 
-type UnstubbedModule = Map<string, ThirdPartyProperty>
-type UnstubbedModules = Map<string, UnstubbedModule>
-
-class UnstubbedModuleHandler {
-  private readonly modulesBeforeTheyWereStubbed: UnstubbedModules
-
-  constructor () {
-    this.modulesBeforeTheyWereStubbed = new Map()
+    return this
   }
 
-  private createModule (moduleName: string): UnstubbedModule {
-    const unstubbedModule: UnstubbedModule = new Map()
-    this.modulesBeforeTheyWereStubbed.set(moduleName, unstubbedModule)
-    return unstubbedModule
+  swapMethod (methodName: string, returns: Returns): Module {
+    this.saveOriginalMethod(methodName)
+    this.setMethod(methodName, returns)
+
+    return this
   }
 
-  private getModule (moduleName: string): UnstubbedModule {
-    if (this.modulesBeforeTheyWereStubbed.has(moduleName)) {
-      return this.modulesBeforeTheyWereStubbed.get(
-        moduleName
-      ) as UnstubbedModule
-    }
-
-    return this.createModule(moduleName)
-  }
-
-  reset (): void {
-    this.modulesBeforeTheyWereStubbed.forEach(
-      (unstubbedModule: UnstubbedModule, moduleName: string) => {
-        unstubbedModule.forEach(
-          (returns: ThirdPartyProperty, method: string) => {
-            if (isFunction(returns)) {
-              new Module(moduleName).setMethod(method, returns)
-            }
-          }
-        )
+  reset (): Module {
+    this.cachedMethods.forEach(
+      (returns: Returns, methodName: string): void => {
+        this.setMethod(methodName, returns)
       }
     )
-  }
 
-  saveMethod (
-    moduleName: string,
-    methodName: string,
-    realMethod: Function
-  ): void {
-    const unstubbedModule = this.getModule(moduleName)
-    unstubbedModule.set(methodName, realMethod)
+    return this
   }
 }
 
@@ -155,35 +141,33 @@ export class Stub {
   static ACCESSING_UNSTUBBED_DEPENDENCY_ERROR = ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
   static INTERNAL_STUB_ERROR = INTERNAL_STUB_ERROR
 
-  private readonly modules: UnstubbedModuleHandler
+  private readonly stubbedModules: Map<string, Module>
 
   constructor () {
-    this.modules = new UnstubbedModuleHandler()
+    this.stubbedModules = new Map()
   }
 
-  private isUnstubbedMethod (method: ThirdPartyProperty): method is Function {
-    return isFunction(method) && method.name !== 'throwUnstubbedError'
-  }
+  private getModule (moduleName: string): Module {
+    const mod = this.stubbedModules.get(moduleName)
 
-  private saveOriginalMethod (options: StubOptions): void {
-    const realMethod = new Module(options.module).getMethod(options.method)
-
-    if (this.isUnstubbedMethod(realMethod)) {
-      this.modules.saveMethod(options.module, options.method, realMethod)
+    if (mod) {
+      return mod
     }
+
+    this.stubbedModules.set(moduleName, new Module(moduleName))
+    return this.getModule(moduleName)
   }
 
   init (): void {
-    new Module('fs').initializeAllMethods()
+    this.getModule('fs').initializeAllMethods()
   }
 
   resetStubs (): void {
-    this.modules.reset()
+    this.stubbedModules.forEach(mod => mod.reset())
   }
 
   @boundMethod
   add (options: StubOptions): void {
-    this.saveOriginalMethod(options)
-    new Module(options.module).setMethod(options.method, options.returns)
+    this.getModule(options.module).swapMethod(options.method, options.returns)
   }
 }
