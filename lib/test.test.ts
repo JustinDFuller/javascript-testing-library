@@ -1,6 +1,6 @@
-import { Test, TestActions } from './Test'
 import { Suite } from './Suite'
 import { Assert } from './Assert'
+import { Test, TestActions } from './Test'
 import { NoopFormatter } from './formatters/noop'
 
 const suite = Suite({

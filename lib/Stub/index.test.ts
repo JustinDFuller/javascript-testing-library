@@ -1,7 +1,7 @@
 import fs from 'fs'
 
-import { Suite } from './Suite'
-import { Stub } from './Stub'
+import { Suite } from '../Suite'
+import { Stub } from './'
 
 const suite = Suite({
   name: 'Stub'

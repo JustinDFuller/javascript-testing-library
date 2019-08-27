@@ -1,5 +1,5 @@
+import { Stub, StubOptions } from './Stub'
 import { Assert, AssertOptions } from './Assert'
-import { Stub, StubOptions } from './stub'
 
 export interface TestActions {
   equal(options: AssertOptions): void

@@ -8,7 +8,7 @@ Suites({
     './Assert.test',
     './test.test',
     './Suite.test',
-    './stub.test',
+    './stub/index.test',
     './Suites.test'
   ],
   formatter
