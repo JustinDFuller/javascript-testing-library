@@ -2,6 +2,8 @@ import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
 
+const automaticallyMockedModules = ['fs', 'http']
+
 export interface StubOptions {
   module: string
   method: string
@@ -28,7 +30,9 @@ export class Stub {
 
   @boundMethod
   init (): Stub {
-    this.getModule('fs').initializeAllMethods()
+    automaticallyMockedModules.forEach(mod =>
+      this.getModule(mod).initializeAllMethods()
+    )
 
     return this
   }

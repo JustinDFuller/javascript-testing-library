@@ -1,6 +1,8 @@
 import { isFunction } from './function'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
+const excludes = ['realpathSync']
+
 interface ThirdPartyModule {
   [propName: string]: Function
 }
@@ -59,17 +61,19 @@ export class Module {
   }
 
   initializeAllMethods (): Module {
-    Object.keys(this.module).forEach(propertyName => {
-      const property = this.getMethod(propertyName)
+    Object.keys(this.module)
+      .filter(propertyName => !excludes.includes(propertyName))
+      .forEach(propertyName => {
+        const property = this.getMethod(propertyName)
 
-      if (isFunction(property)) {
-        this.setMethod(
-          propertyName,
-          new UnstubbedDependency(this.moduleName, propertyName)
-            .throwUnstubbedError
-        )
-      }
-    })
+        if (isFunction(property)) {
+          this.swapMethod(
+            propertyName,
+            new UnstubbedDependency(this.moduleName, propertyName)
+              .throwUnstubbedError
+          )
+        }
+      })
 
     return this
   }

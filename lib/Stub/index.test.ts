@@ -1,7 +1,10 @@
 import fs from 'fs'
+import http from 'http'
+import ts from 'typescript'
 
 import { Suite } from '../Suite'
 import { Module } from './Module'
+import { NoopFormatter } from '../formatters/noop'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
 const suite = Suite({
@@ -84,12 +87,78 @@ suite.addTest({
   }
 })
 
-/* suite.addTest({
-  name: 'automatically restores functions',
-  test() {
+suite.addTest({
+  name: 'automatically mocks the HTTP module',
+  async test (t) {
+    let error
 
+    try {
+      await http.request('http://github.com')
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } http::request`,
+      actual: error.message
+    })
   }
-}) */
+})
+
+suite.addTest({
+  name: 'automatically restores modules that were mocked',
+  async test (t) {
+    let error
+
+    try {
+      await Suite({
+        name: '(testing mock restoration)'
+      })
+        .addTest({
+          name: '(mocking typescript)',
+          test (t) {
+            t.stub({
+              module: 'typescript',
+              method: 'transpileModule',
+              returns () {
+                return {
+                  outputText: 'fake output text'
+                }
+              }
+            })
+
+            const { outputText } = ts.transpileModule('let test = 1', {})
+
+            t.equal({
+              expected: 'fake output text',
+              actual: outputText
+            })
+          }
+        })
+        .addTest({
+          name: '(using typescript transpileModule without stubbing it)',
+          test (t) {
+            const { outputText } = ts.transpileModule('let test = 1', {})
+
+            t.equal({
+              expected: 'var test = 1;\n',
+              actual: outputText
+            })
+          }
+        })
+        .runTests(NoopFormatter())
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: undefined,
+      actual: error
+    })
+  }
+})
 
 module.exports = {
   suite
