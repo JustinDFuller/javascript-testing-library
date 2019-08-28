@@ -78,7 +78,7 @@ suite.addTest({
 
 ## TODO
 * [x] Pretty printed output
-* [ ] Automatically stub node http
+* [x] Automatically stub node http
 * [ ] Automatically stub node https
 * [ ] Automatically stub node http/2
 * [ ] Automatically stub node net
