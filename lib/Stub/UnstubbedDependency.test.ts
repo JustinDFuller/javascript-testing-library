@@ -8,8 +8,7 @@ export const suite = Suite({
 })
 
 suite.addTest({
-  name:
-    'throws an error when accessing an un-stubbed dependency (even if it was stubbed before)',
+  name: 'automatically mocks the fs module',
   test (t) {
     let error
 

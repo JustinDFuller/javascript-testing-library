@@ -1,6 +1,7 @@
 import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
+import { UnstubbedModule } from './UnstubbedModule'
 
 const automaticallyMockedModules = ['fs', 'http', 'http2', 'net', 'dns', 'tls']
 
@@ -30,8 +31,8 @@ export class Stub {
 
   @boundMethod
   init (): Stub {
-    automaticallyMockedModules.forEach(mod =>
-      this.getModule(mod).initializeAllMethods()
+    automaticallyMockedModules.forEach(moduleName =>
+      this.stubbedModules.set(moduleName, new UnstubbedModule(moduleName))
     )
 
     return this
