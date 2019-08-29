@@ -1,7 +1,23 @@
 import { isFunction } from './function'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
-const excludes = ['realpathSync']
+interface ExclusionMap {
+  [key: string]: string[]
+}
+
+class Exclusions {
+  private readonly exclusions: ExclusionMap
+
+  constructor () {
+    this.exclusions = {
+      fs: ['realpathSync']
+    }
+  }
+
+  has (moduleName: string, propertyName: string): boolean {
+    return (this.exclusions[moduleName] || []).includes(propertyName)
+  }
+}
 
 interface ThirdPartyModule {
   [propName: string]: Function
@@ -14,8 +30,10 @@ export class Module {
   private readonly moduleName: string
   private readonly module: ThirdPartyModule
   private readonly cachedMethods: Map<string, Function>
+  private readonly exclusions: Exclusions
 
   constructor (moduleName: string) {
+    this.exclusions = new Exclusions()
     this.moduleName = moduleName
     this.validateModuleName()
     this.module = require(moduleName)
@@ -62,7 +80,9 @@ export class Module {
 
   initializeAllMethods (): Module {
     Object.keys(this.module)
-      .filter(propertyName => !excludes.includes(propertyName))
+      .filter(
+        propertyName => !this.exclusions.has(this.moduleName, propertyName)
+      )
       .forEach(propertyName => {
         const property = this.getMethod(propertyName)
 

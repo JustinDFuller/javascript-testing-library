@@ -1,5 +1,4 @@
 import fs from 'fs'
-import http from 'http'
 import ts from 'typescript'
 
 import { Suite } from '../Suite'
@@ -93,7 +92,7 @@ suite.addTest({
     let error
 
     try {
-      await http.request('http://github.com')
+      await require('http').request('http://github.com')
     } catch (e) {
       error = e
     }
@@ -102,6 +101,86 @@ suite.addTest({
       expected: `${
         UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
       } http::request`,
+      actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'automatically mocks the HTTP/2 module',
+  async test (t) {
+    let error
+
+    try {
+      await require('http2').createServer()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } http2::createServer`,
+      actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'automatically mocks the net module',
+  async test (t) {
+    let error
+
+    try {
+      await require('net').connect()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } net::connect`,
+      actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'automatically mocks the dns module',
+  async test (t) {
+    let error
+
+    try {
+      await require('dns').resolve()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } dns::resolve`,
+      actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'automatically mocks the tls module',
+  async test (t) {
+    let error
+
+    try {
+      await require('tls').connect()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } tls::connect`,
       actual: error.message
     })
   }

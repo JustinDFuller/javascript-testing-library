@@ -79,13 +79,11 @@ suite.addTest({
 ## TODO
 * [x] Pretty printed output
 * [x] Automatically stub node http
-* [ ] Automatically stub node https
-* [ ] Automatically stub node http/2
-* [ ] Automatically stub node net
-* [ ] Automatically stub node dns
-* [ ] Automatically stub node tls
-* [ ] Automatically stub browser XMLHttpRequest
-* [ ] Automatically stub browser fetch
+* [x] Automatically stub node https
+* [x] Automatically stub node http/2
+* [x] Automatically stub node net
+* [x] Automatically stub node dns
+* [x] Automatically stub node tls
 * [ ] Run each test file in its own process
 * [ ] Find and run related tests
 

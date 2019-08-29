@@ -2,7 +2,7 @@ import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
 
-const automaticallyMockedModules = ['fs', 'http']
+const automaticallyMockedModules = ['fs', 'http', 'http2', 'net', 'dns', 'tls']
 
 export interface StubOptions {
   module: string
