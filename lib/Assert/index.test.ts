@@ -1,6 +1,6 @@
-import { Suite } from './Suite'
-import { Assert } from './Assert'
-import { TestActions } from './test'
+import { Assert } from './'
+import { Suite } from '../Suite'
+import { TestActions } from '../test'
 
 const suite = new Suite({
   name: 'Assert'
@@ -12,7 +12,7 @@ suite.addTest({
     let error
 
     try {
-      Assert().equal({
+      new Assert().equal({
         expected: 1,
         actual: 2
       })
@@ -35,7 +35,7 @@ suite.addTest({
     try {
       // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
       // @ts-ignore: need to do an invalid call to Assert.equal to test the error handling.
-      Assert().equal('expected', 'actual')
+      new Assert().equal('expected', 'actual')
     } catch (e) {
       error = e
     }
@@ -53,7 +53,7 @@ suite.addTest({
     let error
 
     try {
-      Assert().equal({
+      new Assert().equal({
         expected: 'string',
         actual: 'object'
       })

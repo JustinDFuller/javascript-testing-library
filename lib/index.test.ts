@@ -5,7 +5,7 @@ const formatter = new SpinnerFormatter()
 
 new Suites({
   paths: [
-    './Assert.test',
+    './Assert/index.test',
     './test.test',
     './Suite.test',
     './stub/index.test',

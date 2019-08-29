@@ -22,7 +22,7 @@ export function Test (options: TestOptions): void | Promise<void> {
     throw new Error(Test.NAME_REQUIRED_ERROR)
   }
 
-  const assert = Assert()
+  const assert = new Assert()
   const stub = new Stub()
 
   function handleComplete (): void {
