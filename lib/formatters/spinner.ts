@@ -23,6 +23,7 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
   static readonly POINTER = chalk.gray.dim(figures.pointer)
 
   private readonly spinner: OraSpinner
+  private readonly startTime: number
   private testCount = 0
   private file = ''
   private suite = ''
@@ -30,6 +31,7 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
   private nextSuite = ''
 
   constructor () {
+    this.startTime = Date.now()
     this.spinner = ora('Running tests.').start()
     this.spinner.color = 'gray'
     this.testCount = 0
@@ -44,6 +46,10 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
       symbol: symbols.success,
       text: this.formatTest()
     })
+  }
+
+  private getRuntime (): number {
+    return (Date.now() - this.startTime) / 1000
   }
 
   emitFile (filePath: string): void {
@@ -89,8 +95,10 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
   end (): void {
     this.printLastTest()
     this.spinner.stopAndPersist({
-      symbol: symbols.success,
-      text: `${this.testCount} Tests Passed`
+      symbol: '',
+      text: `\n ${
+        this.testCount
+      } Tests Passed in ${this.getRuntime()} seconds\n`
     })
     process.exit(0)
   }
