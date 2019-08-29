@@ -1,7 +1,7 @@
 import { Suites } from './Suites'
 import { SpinnerFormatter } from './formatters/spinner'
 
-const formatter = SpinnerFormatter()
+const formatter = new SpinnerFormatter()
 
 Suites({
   paths: [

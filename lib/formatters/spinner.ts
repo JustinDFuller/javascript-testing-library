@@ -7,71 +7,91 @@ import symbols from 'log-symbols'
 import { TestFormatter } from '../Test'
 import { SuitesFormatter } from '../Suites'
 
-const POINTER = chalk.gray.dim(figures.pointer)
+interface StopOptions {
+  symbol: string
+  text: string
+}
 
-export function SpinnerFormatter (): SuitesFormatter & TestFormatter {
-  const spinner = ora('Running tests.').start()
-  spinner.color = 'gray'
+interface OraSpinner {
+  stopAndPersist(options: StopOptions): void
+  start(text: string): OraSpinner
+  color: string
+  text: string
+}
 
-  let testCount = 0
-  let file: string
-  let suite: string
-  let test: string
-  let nextSuite: string
+export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
+  static readonly POINTER = chalk.gray.dim(figures.pointer)
 
-  function formatTest (): string {
-    return `${suite} ${POINTER} ${test}`
+  private readonly spinner: OraSpinner
+  private testCount = 0
+  private file = ''
+  private suite = ''
+  private test = ''
+  private nextSuite = ''
+
+  constructor () {
+    this.spinner = ora('Running tests.').start()
+    this.spinner.color = 'gray'
+    this.testCount = 0
   }
 
-  function printLastTest (): void {
-    spinner.stopAndPersist({
+  private formatTest (): string {
+    return `${this.suite} ${SpinnerFormatter.POINTER} ${this.test}`
+  }
+
+  private printLastTest (): void {
+    this.spinner.stopAndPersist({
       symbol: symbols.success,
-      text: formatTest()
+      text: this.formatTest()
     })
   }
 
-  return {
-    emitFile (filePath): void {
-      file = filePath
-    },
-    emitSuite (name): SuitesFormatter & TestFormatter {
-      nextSuite = name
-      spinner.text = name
-      return this
-    },
-    emitTest (nextTest): void {
-      testCount++
+  emitFile (filePath: string): void {
+    this.file = filePath
+  }
 
-      if (test) {
-        printLastTest()
-      }
+  emitSuite (name: string): SuitesFormatter & TestFormatter {
+    this.nextSuite = name
+    this.spinner.text = name
+    return this
+  }
 
-      test = nextTest
-      suite = nextSuite
-      spinner.start(`${nextSuite} ${POINTER} ${nextTest}`)
-    },
-    emitError (error: Error): void {
-      let stack = ''
+  emitTest (nextTest: string): void {
+    this.testCount++
 
-      if (error && error.stack) {
-        stack = error.stack
-          .replace(file, chalk.black.bgYellow(file))
-          .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '')
-      }
-
-      spinner.stopAndPersist({
-        symbol: symbols.error,
-        text: `${formatTest()} \n\n${stack}\n`
-      })
-      process.exit(1)
-    },
-    end (): void {
-      printLastTest()
-      spinner.stopAndPersist({
-        symbol: symbols.success,
-        text: `${testCount} Tests Passed`
-      })
-      process.exit(0)
+    if (this.test) {
+      this.printLastTest()
     }
+
+    this.test = nextTest
+    this.suite = this.nextSuite
+    this.spinner.start(
+      `${this.nextSuite} ${SpinnerFormatter.POINTER} ${nextTest}`
+    )
+  }
+
+  emitError (error: Error): void {
+    let stack = ''
+
+    if (error && error.stack) {
+      stack = error.stack
+        .replace(this.file, chalk.black.bgYellow(this.file))
+        .replace(new RegExp(path.resolve(process.cwd(), '..'), 'g'), '')
+    }
+
+    this.spinner.stopAndPersist({
+      symbol: symbols.error,
+      text: `${this.formatTest()} \n\n${stack}\n`
+    })
+    process.exit(1)
+  }
+
+  end (): void {
+    this.printLastTest()
+    this.spinner.stopAndPersist({
+      symbol: symbols.success,
+      text: `${this.testCount} Tests Passed`
+    })
+    process.exit(0)
   }
 }
