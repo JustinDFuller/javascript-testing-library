@@ -8,6 +8,7 @@ export interface TestActions {
 
 export interface TestOptions {
   readonly name: string
+  readonly formatter: TestFormatter
   test(t: TestActions): void | Promise<void>
 }
 
@@ -16,10 +17,7 @@ export interface TestFormatter {
   emitError(error: Error): void
 }
 
-export function Test (
-  options: TestOptions,
-  formatter: TestFormatter
-): void | Promise<void> {
+export function Test (options: TestOptions): void | Promise<void> {
   if (!options.name) {
     throw new Error(Test.NAME_REQUIRED_ERROR)
   }
@@ -33,12 +31,12 @@ export function Test (
   }
 
   function handleError (err: Error): void {
-    formatter.emitError(err)
+    options.formatter.emitError(err)
   }
 
   stub.init()
 
-  formatter.emitTest(options.name)
+  options.formatter.emitTest(options.name)
 
   try {
     const promise = options.test({
@@ -52,7 +50,7 @@ export function Test (
       handleComplete()
     }
   } catch (e) {
-    formatter.emitError(e)
+    options.formatter.emitError(e)
   }
 }
 

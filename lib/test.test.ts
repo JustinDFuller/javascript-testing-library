@@ -13,18 +13,16 @@ suite.addTest({
     let err
 
     try {
-      Test(
-        {
-          name: 'exits with an error when an assertion fails',
-          test (t) {
-            t.equal({
-              expected: 1,
-              actual: 2
-            })
-          }
-        },
-        new NoopFormatter()
-      )
+      Test({
+        formatter: new NoopFormatter(),
+        name: 'exits with an error when an assertion fails',
+        test (t) {
+          t.equal({
+            expected: 1,
+            actual: 2
+          })
+        }
+      })
     } catch (e) {
       err = e
     }
@@ -42,18 +40,16 @@ suite.addTest({
     let error
 
     try {
-      Test(
-        {
-          name: '',
-          test (t: TestActions) {
-            t.equal({
-              expected: 1,
-              actual: 2
-            })
-          }
-        },
-        new NoopFormatter()
-      )
+      Test({
+        formatter: new NoopFormatter(),
+        name: '',
+        test (t: TestActions) {
+          t.equal({
+            expected: 1,
+            actual: 2
+          })
+        }
+      })
     } catch (e) {
       error = e
     }
@@ -71,13 +67,11 @@ suite.addTest({
     let error
 
     try {
-      Test(
-        {
-          name: '(not calling t.equal at least once)',
-          test () {} // eslint-disable-line @typescript-eslint/no-empty-function
-        },
-        new NoopFormatter()
-      )
+      Test({
+        formatter: new NoopFormatter(),
+        name: '(not calling t.equal at least once)',
+        test () {} // eslint-disable-line @typescript-eslint/no-empty-function
+      })
     } catch (e) {
       error = e
     }
@@ -95,22 +89,20 @@ suite.addTest({
     let error
 
     try {
-      Test(
-        {
-          name: '(calling t.equal twice)',
-          test (_t) {
-            _t.equal({
-              expected: 1,
-              actual: 1
-            })
-            _t.equal({
-              expected: 2,
-              actual: 1
-            })
-          }
-        },
-        new NoopFormatter()
-      )
+      Test({
+        formatter: new NoopFormatter(),
+        name: '(calling t.equal twice)',
+        test (_t) {
+          _t.equal({
+            expected: 1,
+            actual: 1
+          })
+          _t.equal({
+            expected: 2,
+            actual: 1
+          })
+        }
+      })
     } catch (e) {
       error = e
     }

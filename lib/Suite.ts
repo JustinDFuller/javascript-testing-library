@@ -4,8 +4,10 @@ interface SuiteOptions {
   name: string
 }
 
+type SuiteTestOptions = Omit<TestOptions, 'formatter'>
+
 interface Suite {
-  addTest(test: TestOptions): Suite
+  addTest(test: SuiteTestOptions): Suite
   runTests(formatter: SuiteFormatter): Promise<void>
 }
 
@@ -14,7 +16,7 @@ export interface SuiteFormatter {
 }
 
 export function Suite (options: SuiteOptions): Suite {
-  const tests: Set<TestOptions> = new Set()
+  const tests: Set<SuiteTestOptions> = new Set()
 
   function isNameInvalid (): boolean {
     return !options || !options.name
@@ -37,7 +39,7 @@ export function Suite (options: SuiteOptions): Suite {
 
   async function runTests (testFormatter: TestFormatter): Promise<void> {
     for (const test of tests) {
-      await Test(test, testFormatter)
+      await Test({ ...test, formatter: testFormatter })
     }
   }
 
@@ -48,7 +50,7 @@ export function Suite (options: SuiteOptions): Suite {
   }
 
   return {
-    addTest (test: TestOptions): Suite {
+    addTest (test: SuiteTestOptions): Suite {
       tests.add(test)
       return this
     },
