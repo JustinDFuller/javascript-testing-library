@@ -15,31 +15,33 @@ interface SuiteMeta {
   path: string
 }
 
-interface Suites {
-  runTests(suites: SuiteMeta[]): Promise<void>
-  requireSuites(paths: string[]): SuiteMeta[]
-  runAll(): Promise<void>
-}
+export class Suites {
+  private readonly formatter: SuitesFormatter
+  private readonly paths: string[]
 
-export function Suites (options: SuitesOptions): Suites {
-  return {
-    async runTests (suites: SuiteMeta[]): Promise<void> {
-      for (const { suite, path } of suites) {
-        options.formatter.emitFile(path)
-        await suite.runTests(options.formatter)
-      }
-    },
-    requireSuites (paths: string[]): SuiteMeta[] {
-      return paths.map(function (path: string) {
-        return {
-          suite: require(path).suite,
-          path: require.resolve(path)
-        }
-      })
-    },
-    async runAll (): Promise<void> {
-      await this.runTests(this.requireSuites(options.paths))
-      options.formatter.end()
+  constructor (options: SuitesOptions) {
+    this.formatter = options.formatter
+    this.paths = options.paths
+  }
+
+  async runTests (suites: SuiteMeta[]): Promise<void> {
+    for (const { suite, path } of suites) {
+      this.formatter.emitFile(path)
+      await suite.runTests(this.formatter)
     }
+  }
+
+  requireSuites (paths: string[]): SuiteMeta[] {
+    return paths.map(function (path: string) {
+      return {
+        suite: require(path).suite,
+        path: require.resolve(path)
+      }
+    })
+  }
+
+  async runAll (): Promise<void> {
+    await this.runTests(this.requireSuites(this.paths))
+    this.formatter.end()
   }
 }

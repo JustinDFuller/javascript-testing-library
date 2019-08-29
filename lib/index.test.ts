@@ -3,7 +3,7 @@ import { SpinnerFormatter } from './formatters/spinner'
 
 const formatter = new SpinnerFormatter()
 
-Suites({
+new Suites({
   paths: [
     './Assert.test',
     './test.test',
