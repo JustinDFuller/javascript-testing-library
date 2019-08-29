@@ -86,6 +86,7 @@ suite.addTest({
 * [x] Automatically stub node tls
 * [ ] Run each test file in its own process
 * [ ] Find and run related tests
+* [ ] CLI
 
 ## Output
 

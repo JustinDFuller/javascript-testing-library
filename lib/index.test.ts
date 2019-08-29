@@ -9,6 +9,7 @@ Suites({
     './test.test',
     './Suite.test',
     './stub/index.test',
+    './stub/UnstubbedDependency.test',
     './Suites.test'
   ],
   formatter
