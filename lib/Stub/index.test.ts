@@ -5,7 +5,7 @@ import { Suite } from '../Suite'
 import { Module } from './Module'
 import { NoopFormatter } from '../formatters/noop'
 
-const suite = Suite({
+const suite = new Suite({
   name: 'Stub'
 })
 
@@ -68,7 +68,7 @@ suite.addTest({
     let error
 
     try {
-      await Suite({
+      await new Suite({
         name: '(testing mock restoration)'
       })
         .addTest({

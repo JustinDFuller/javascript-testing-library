@@ -3,7 +3,7 @@ import fs from 'fs'
 import { Suite } from '../Suite'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
-export const suite = Suite({
+export const suite = new Suite({
   name: 'UnstubbedDependency'
 })
 

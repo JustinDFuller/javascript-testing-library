@@ -1,67 +1,67 @@
 import { Test, TestOptions, TestFormatter } from './test'
 
+type AddTestOptions = Omit<TestOptions, 'formatter'>
+
 interface SuiteOptions {
   name: string
-}
-
-type SuiteTestOptions = Omit<TestOptions, 'formatter'>
-
-interface Suite {
-  addTest(test: SuiteTestOptions): Suite
-  runTests(formatter: SuiteFormatter): Promise<void>
 }
 
 export interface SuiteFormatter {
   emitSuite(name: string): TestFormatter
 }
 
-export function Suite (options: SuiteOptions): Suite {
-  const tests: Set<SuiteTestOptions> = new Set()
+export class Suite {
+  static readonly NAME_REQUIRED_ERROR = 'Suite requires a name.'
+  static readonly ONE_TEST_REQUIRED_ERROR =
+    'At least one test is required for each suite.'
 
-  function isNameInvalid (): boolean {
-    return !options || !options.name
+  private readonly name: string
+  private readonly tests: Set<AddTestOptions>
+
+  constructor (options: SuiteOptions) {
+    this.tests = new Set()
+    this.name = options.name
   }
 
-  function throwNameRequiredError (): never {
+  private isNameInvalid (): boolean {
+    return !this.name
+  }
+
+  private throwNameRequiredError (): never {
     throw new Error(Suite.NAME_REQUIRED_ERROR)
   }
 
-  function validateName (): void | never {
-    if (isNameInvalid()) {
-      throwNameRequiredError()
+  private validateName (): void | never {
+    if (this.isNameInvalid()) {
+      this.throwNameRequiredError()
     }
   }
 
-  function logName (formatter: SuiteFormatter): TestFormatter {
-    validateName()
-    return formatter.emitSuite(options.name)
+  private logName (formatter: SuiteFormatter): TestFormatter {
+    this.validateName()
+    return formatter.emitSuite(this.name)
   }
 
-  async function runTests (testFormatter: TestFormatter): Promise<void> {
-    for (const test of tests) {
+  private async executeTests (testFormatter: TestFormatter): Promise<void> {
+    for (const test of this.tests) {
       await Test({ ...test, formatter: testFormatter })
     }
   }
 
-  function validateTests (): void | never {
-    if (tests.size === 0) {
+  private validateTests (): void | never {
+    if (this.tests.size === 0) {
       throw new Error(Suite.ONE_TEST_REQUIRED_ERROR)
     }
   }
 
-  return {
-    addTest (test: SuiteTestOptions): Suite {
-      tests.add(test)
-      return this
-    },
-    runTests (formatter: SuiteFormatter): Promise<void> {
-      const testFormatter = logName(formatter)
-      validateTests()
-      return runTests(testFormatter)
-    }
+  addTest (addTestOptions: AddTestOptions): Suite {
+    this.tests.add(addTestOptions)
+    return this
+  }
+
+  runTests (formatter: SuiteFormatter): Promise<void> {
+    const testFormatter = this.logName(formatter)
+    this.validateTests()
+    return this.executeTests(testFormatter)
   }
 }
-
-Suite.NAME_REQUIRED_ERROR = 'Suite requires a name.'
-
-Suite.ONE_TEST_REQUIRED_ERROR = 'At least one test is required for each suite.'

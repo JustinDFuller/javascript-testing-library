@@ -16,14 +16,14 @@ interface SuiteMeta {
 }
 
 interface Suites {
-  runTests(suites: Suite[]): Promise<void>
+  runTests(suites: SuiteMeta[]): Promise<void>
   requireSuites(paths: string[]): SuiteMeta[]
   runAll(): Promise<void>
 }
 
 export function Suites (options: SuitesOptions): Suites {
   return {
-    async runTests (suites: Suite[]): Promise<void> {
+    async runTests (suites: SuiteMeta[]): Promise<void> {
       for (const { suite, path } of suites) {
         options.formatter.emitFile(path)
         await suite.runTests(options.formatter)

@@ -2,7 +2,7 @@ import { Suite } from './Suite'
 import { Suites } from './Suites'
 import { NoopFormatter } from './formatters/noop'
 
-const suite = Suite({
+const suite = new Suite({
   name: 'Suites'
 })
 
@@ -13,7 +13,8 @@ suite.addTest({
 
     await Suites({ paths: [], formatter: new NoopFormatter() }).runTests([
       {
-        suite: Suite({
+        path: 'none',
+        suite: new Suite({
           name: '(consistent order suite 1)'
         })
           .addTest({
@@ -41,7 +42,8 @@ suite.addTest({
           })
       },
       {
-        suite: Suite({
+        path: 'none',
+        suite: new Suite({
           name: '(consistent order suite 2)'
         })
           .addTest({

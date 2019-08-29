@@ -3,7 +3,7 @@ import { Assert } from './Assert'
 import { Test, TestActions } from './Test'
 import { NoopFormatter } from './formatters/noop'
 
-const suite = Suite({
+const suite = new Suite({
   name: 'Test'
 })
 

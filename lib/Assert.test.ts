@@ -2,7 +2,7 @@ import { Suite } from './Suite'
 import { Assert } from './Assert'
 import { TestActions } from './test'
 
-const suite = Suite({
+const suite = new Suite({
   name: 'Assert'
 })
 

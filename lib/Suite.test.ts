@@ -1,7 +1,7 @@
 import { Suite } from './Suite'
 import { NoopFormatter } from './formatters/noop'
 
-const suite = Suite({
+const suite = new Suite({
   name: 'Suite'
 })
 
@@ -11,7 +11,7 @@ suite.addTest({
     let error
 
     try {
-      Suite({
+      new Suite({
         name: ''
       }).runTests(new NoopFormatter())
     } catch (e) {
@@ -31,7 +31,7 @@ suite.addTest({
     let error
 
     try {
-      Suite({
+      new Suite({
         name: '(running a suite with no tests)'
       }).runTests(new NoopFormatter())
     } catch (e) {
@@ -51,7 +51,7 @@ suite.addTest({
     let error
 
     try {
-      await Suite({
+      await new Suite({
         name: '(creating a Suite to test the addTest method)'
       })
         .addTest({
