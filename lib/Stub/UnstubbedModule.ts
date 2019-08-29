@@ -1,6 +1,6 @@
 import { Module } from './Module'
 
-import { isFunction } from './function'
+import { isFunction } from '../function'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
 interface ExclusionMap {

@@ -1,6 +1,6 @@
 import { boundMethod } from 'autobind-decorator'
 
-import { isFunction } from './function'
+import { isFunction } from '../function'
 
 export class UnstubbedDependency {
   static readonly ACCESSING_UNSTUBBED_DEPENDENCY_ERROR =

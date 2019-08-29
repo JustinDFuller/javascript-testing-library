@@ -23,7 +23,7 @@ suite.addTest({
             })
           }
         },
-        NoopFormatter()
+        new NoopFormatter()
       )
     } catch (e) {
       err = e
@@ -52,7 +52,7 @@ suite.addTest({
             })
           }
         },
-        NoopFormatter()
+        new NoopFormatter()
       )
     } catch (e) {
       error = e
@@ -76,7 +76,7 @@ suite.addTest({
           name: '(not calling t.equal at least once)',
           test () {} // eslint-disable-line @typescript-eslint/no-empty-function
         },
-        NoopFormatter()
+        new NoopFormatter()
       )
     } catch (e) {
       error = e
@@ -109,7 +109,7 @@ suite.addTest({
             })
           }
         },
-        NoopFormatter()
+        new NoopFormatter()
       )
     } catch (e) {
       error = e

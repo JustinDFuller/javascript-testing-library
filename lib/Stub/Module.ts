@@ -1,4 +1,4 @@
-import { isFunction } from './function'
+import { isFunction } from '../function'
 
 interface ThirdPartyModule {
   [propName: string]: Function

@@ -103,7 +103,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(NoopFormatter())
+        .runTests(new NoopFormatter())
     } catch (e) {
       error = e
     }

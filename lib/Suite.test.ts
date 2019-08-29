@@ -13,7 +13,7 @@ suite.addTest({
     try {
       Suite({
         name: ''
-      }).runTests(NoopFormatter())
+      }).runTests(new NoopFormatter())
     } catch (e) {
       error = e
     }
@@ -33,7 +33,7 @@ suite.addTest({
     try {
       Suite({
         name: '(running a suite with no tests)'
-      }).runTests(NoopFormatter())
+      }).runTests(new NoopFormatter())
     } catch (e) {
       error = e
     }
@@ -63,7 +63,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(NoopFormatter())
+        .runTests(new NoopFormatter())
     } catch (e) {
       error = e
     }

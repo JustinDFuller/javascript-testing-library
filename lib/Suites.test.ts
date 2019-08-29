@@ -11,7 +11,7 @@ suite.addTest({
   async test (t) {
     const order: number[] = []
 
-    await Suites({ paths: [], formatter: NoopFormatter() }).runTests([
+    await Suites({ paths: [], formatter: new NoopFormatter() }).runTests([
       {
         suite: Suite({
           name: '(consistent order suite 1)'
