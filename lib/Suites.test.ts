@@ -1,6 +1,6 @@
 import { Suite } from './Suite'
 import { Suites } from './Suites'
-import { NoopFormatter } from './formatters/noop'
+import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
 const suite = new Suite({

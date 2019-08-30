@@ -3,7 +3,7 @@ import ts from 'typescript'
 
 import { Suite } from '../Suite'
 import { Module } from './Module'
-import { NoopFormatter } from '../formatters/noop'
+import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
 const suite = new Suite({

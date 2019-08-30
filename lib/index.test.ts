@@ -1,5 +1,5 @@
 import { Suites } from './Suites'
-import { SpinnerFormatter } from './formatters/spinner'
+import { SpinnerFormatter } from './Formatter/Spinner'
 import { ProcessExitStrategy } from './ExitStrategy/Process'
 
 const formatter = new SpinnerFormatter()
