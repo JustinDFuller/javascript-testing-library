@@ -12,7 +12,7 @@ class Exclusions {
 
   constructor () {
     this.exclusions = {
-      fs: ['realpathSync', 'ReadStream'], // this is used by require()
+      fs: ['realpathSync' /* this is used by require() */, 'ReadStream'],
       net: ['Socket'], // currently don't understand why this exclusion is needed
       process: ['kill', '_kill']
     }
