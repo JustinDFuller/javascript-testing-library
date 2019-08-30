@@ -94,12 +94,13 @@ suite.addTest({
 * [x] Automatically stub node net
 * [x] Automatically stub node dns
 * [x] Automatically stub node tls
-* [ ] Automatically stub node child_process
-* [ ] Automatically stub node process
+* [x] Automatically stub node child_process
+* [x] Automatically stub node process
 * [ ] Run each test file in its own process
 * [ ] Find and run related tests
-* [ ] CLI
+* [x] Basic CLI
 * [ ] Gracefully handle invalid test files
+* [ ] Create documentation from tests
 
 ## Output
 
