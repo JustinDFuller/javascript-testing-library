@@ -128,3 +128,43 @@ suite.addTest({
     })
   }
 })
+
+suite.addTest({
+  name: 'automatically mocks the child_process module',
+  async test (t) {
+    let error
+
+    try {
+      await require('child_process').spawn()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } child_process::spawn`,
+      actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'automatically mocks the process module',
+  async test (t) {
+    let error
+
+    try {
+      await require('process').cwd()
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      expected: `${
+        UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
+      } process::cwd`,
+      actual: error.message
+    })
+  }
+})

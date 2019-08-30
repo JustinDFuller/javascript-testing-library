@@ -10,7 +10,8 @@ const automaticallyMockedModules = [
   'net',
   'dns',
   'tls',
-  'process'
+  'process',
+  'child_process'
 ]
 
 export interface StubOptions {
