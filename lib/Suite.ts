@@ -44,7 +44,7 @@ export class Suite {
 
   private async executeTests (testFormatter: TestFormatter): Promise<void> {
     for (const test of this.tests) {
-      await Test({ ...test, formatter: testFormatter })
+      await new Test({ ...test, formatter: testFormatter }).execute()
     }
   }
 

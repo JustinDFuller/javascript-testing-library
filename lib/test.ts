@@ -1,3 +1,5 @@
+import { boundMethod } from 'autobind-decorator'
+
 import { Stub, StubOptions } from './Stub'
 import { Assert, AssertOptions } from './Assert'
 
@@ -17,39 +19,65 @@ export interface TestFormatter {
   emitError(error: Error): void
 }
 
-export function Test (options: TestOptions): void | Promise<void> {
-  if (!options.name) {
-    throw new Error(Test.NAME_REQUIRED_ERROR)
+export class Test {
+  static readonly NAME_REQUIRED_ERROR = 'Each test must have a name.'
+
+  private readonly stub: Stub
+  private readonly assert: Assert
+  private readonly options: TestOptions
+
+  constructor (options: TestOptions) {
+    this.options = options
+    this.assert = new Assert()
+    this.stub = new Stub()
+    this.validateName()
   }
 
-  const assert = new Assert()
-  const stub = new Stub()
-
-  function handleComplete (): void {
-    assert.throwIfNotCalledAtLeastOnce()
-    stub.resetStubs()
+  @boundMethod
+  private handleComplete (): void {
+    this.assert.throwIfNotCalledAtLeastOnce()
+    this.stub.resetStubs()
   }
 
-  function handleError (err: Error): void {
-    options.formatter.emitError(err)
+  @boundMethod
+  private handleError (err: Error): void {
+    this.options.formatter.emitError(err)
   }
 
-  options.formatter.emitTest(options.name)
-
-  try {
-    const promise = options.test({
-      equal: assert.equal,
-      stub: stub.add
-    })
-
-    if (promise && promise.then) {
-      return promise.then(handleComplete).catch(handleError)
-    } else {
-      handleComplete()
+  private validateName (): void | never {
+    if (!this.options.name) {
+      throw new Error(Test.NAME_REQUIRED_ERROR)
     }
-  } catch (e) {
-    options.formatter.emitError(e)
+  }
+
+  private handleAsyncTest (promise: Promise<void>): Promise<void> {
+    return promise.then(this.handleComplete).catch(this.handleError)
+  }
+
+  private isPromise (promise: void | Promise<void>): promise is Promise<void> {
+    return Boolean(promise && promise.then)
+  }
+
+  private emitTest (): void {
+    this.options.formatter.emitTest(this.options.name)
+  }
+
+  execute (): void | Promise<void> {
+    this.emitTest()
+
+    try {
+      const promise = this.options.test({
+        equal: this.assert.equal,
+        stub: this.stub.add
+      })
+
+      if (this.isPromise(promise)) {
+        return this.handleAsyncTest(promise)
+      } else {
+        this.handleComplete()
+      }
+    } catch (e) {
+      this.handleError(e)
+    }
   }
 }
-
-Test.NAME_REQUIRED_ERROR = 'Each test must have a name.'

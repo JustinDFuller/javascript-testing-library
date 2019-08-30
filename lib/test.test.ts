@@ -13,16 +13,16 @@ suite.addTest({
     let err
 
     try {
-      Test({
+      new Test({
         formatter: new NoopFormatter(),
         name: 'exits with an error when an assertion fails',
-        test (t) {
+        test (t): void {
           t.equal({
             expected: 1,
             actual: 2
           })
         }
-      })
+      }).execute()
     } catch (e) {
       err = e
     }
@@ -40,16 +40,16 @@ suite.addTest({
     let error
 
     try {
-      Test({
+      new Test({
         formatter: new NoopFormatter(),
         name: '',
-        test (t: TestActions) {
+        test (t: TestActions): void {
           t.equal({
             expected: 1,
             actual: 2
           })
         }
-      })
+      }).execute()
     } catch (e) {
       error = e
     }
@@ -67,11 +67,11 @@ suite.addTest({
     let error
 
     try {
-      Test({
+      new Test({
         formatter: new NoopFormatter(),
         name: '(not calling t.equal at least once)',
-        test () {} // eslint-disable-line @typescript-eslint/no-empty-function
-      })
+        test (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+      }).execute()
     } catch (e) {
       error = e
     }
@@ -89,10 +89,10 @@ suite.addTest({
     let error
 
     try {
-      Test({
+      new Test({
         formatter: new NoopFormatter(),
         name: '(calling t.equal twice)',
-        test (_t) {
+        test (_t): void {
           _t.equal({
             expected: 1,
             actual: 1
@@ -102,7 +102,7 @@ suite.addTest({
             actual: 1
           })
         }
-      })
+      }).execute()
     } catch (e) {
       error = e
     }
