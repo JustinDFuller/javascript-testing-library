@@ -34,8 +34,6 @@ export function Test (options: TestOptions): void | Promise<void> {
     options.formatter.emitError(err)
   }
 
-  stub.init()
-
   options.formatter.emitTest(options.name)
 
   try {

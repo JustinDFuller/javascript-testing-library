@@ -16,6 +16,7 @@ export class Stub {
 
   constructor () {
     this.stubbedModules = new Map()
+    this.init()
   }
 
   private getModule (moduleName: string): Module {
@@ -29,13 +30,10 @@ export class Stub {
     return this.getModule(moduleName)
   }
 
-  @boundMethod
-  init (): Stub {
+  private init (): void {
     automaticallyMockedModules.forEach(moduleName =>
       this.stubbedModules.set(moduleName, new UnstubbedModule(moduleName))
     )
-
-    return this
   }
 
   @boundMethod

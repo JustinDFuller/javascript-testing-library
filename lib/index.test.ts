@@ -6,10 +6,10 @@ const formatter = new SpinnerFormatter()
 new Suites({
   paths: [
     './Assert/index.test',
-    './test.test',
-    './Suite.test',
     './stub/index.test',
     './stub/UnstubbedDependency.test',
+    './Test.test',
+    './Suite.test',
     './Suites.test'
   ],
   formatter
