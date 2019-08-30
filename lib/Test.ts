@@ -40,12 +40,13 @@ export class Test {
 
   @boundMethod
   private handleComplete (): void {
-    this.assert.throwIfNotCalledAtLeastOnce()
     this.stub.resetStubs()
+    this.assert.throwIfNotCalledAtLeastOnce()
   }
 
   @boundMethod
   private handleError (err: Error): void {
+    this.stub.resetStubs()
     this.options.formatter.emitError(err)
     this.options.exitStrategy.testError(err)
   }
@@ -70,6 +71,7 @@ export class Test {
 
   execute (): void | Promise<void> {
     this.emitTest()
+    this.stub.init()
 
     try {
       const promise = this.options.test({

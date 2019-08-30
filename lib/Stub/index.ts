@@ -3,7 +3,15 @@ import { boundMethod } from 'autobind-decorator'
 import { Module } from './Module'
 import { UnstubbedModule } from './UnstubbedModule'
 
-const automaticallyMockedModules = ['fs', 'http', 'http2', 'net', 'dns', 'tls']
+const automaticallyMockedModules = [
+  'fs',
+  'http',
+  'http2',
+  'net',
+  'dns',
+  'tls',
+  'process'
+]
 
 export interface StubOptions {
   module: string
@@ -16,7 +24,6 @@ export class Stub {
 
   constructor () {
     this.stubbedModules = new Map()
-    this.init()
   }
 
   private getModule (moduleName: string): Module {
@@ -30,7 +37,7 @@ export class Stub {
     return this.getModule(moduleName)
   }
 
-  private init (): void {
+  init (): void {
     automaticallyMockedModules.forEach(moduleName =>
       this.stubbedModules.set(moduleName, new UnstubbedModule(moduleName))
     )

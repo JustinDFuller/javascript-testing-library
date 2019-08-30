@@ -13,7 +13,7 @@
   },
   "scripts": {
     "format": "prettier-standard \"{lib,test,bin}/**/*.ts\"",
-    "test": "node dist/index.test.js",
+    "test": "./bin/javascript-testing-library.js 'dist/**/*.test.js'",
     "build": "tsc",
     "lint:base": "eslint --fix",
     "lint": "npm run lint:base \"lib/**/*.ts\"",
@@ -66,6 +66,7 @@
   "dependencies": {
     "autobind-decorator": "^2.4.0",
     "figures": "^3.0.0",
+    "glob": "^7.1.4",
     "log-symbols": "^3.0.0",
     "ora": "^3.4.0"
   }

@@ -37,7 +37,7 @@ export class Module {
     return isFunction(method) && method.name !== 'throwUnstubbedError'
   }
 
-  private saveOriginalMethod (methodName: string): Module {
+  protected saveOriginalMethod (methodName: string): Module {
     const originalMethod = this.getMethod(methodName)
 
     if (this.isUnstubbedMethod(originalMethod)) {

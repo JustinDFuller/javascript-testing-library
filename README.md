@@ -8,6 +8,16 @@ A highly opinionated testing library for JavaScript
 npm install javascript-testing-library --save-dev
 ```
 
+## In your package.json
+
+```json
+{
+  "scripts": {
+    "test": "javascript-testing-library 'lib/**/*.test.js'"
+  }
+}
+```
+
 ## Usage
 
 ```js

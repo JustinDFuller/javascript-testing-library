@@ -1,19 +1,17 @@
 import { Suites } from './Suites'
+import { globMatcher } from './glob'
 import { SpinnerFormatter } from './Formatter/Spinner'
 import { ProcessExitStrategy } from './ExitStrategy/Process'
 
 const formatter = new SpinnerFormatter()
 const exitStrategy = new ProcessExitStrategy()
 
-new Suites({
-  paths: [
-    './Assert/index.test',
-    './stub/index.test',
-    './stub/UnstubbedDependency.test',
-    './Test.test',
-    './Suite.test',
-    './Suites.test'
-  ],
-  formatter,
-  exitStrategy
-}).runAll()
+export async function main(globPattern: string): Promise<void> {
+  const paths = await globMatcher(globPattern)
+  await new Suites({
+    paths,
+    formatter,
+    exitStrategy
+  }).runAll()
+}
+
