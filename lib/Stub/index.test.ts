@@ -4,6 +4,7 @@ import ts from 'typescript'
 import { Suite } from '../Suite'
 import { Module } from './Module'
 import { NoopFormatter } from '../formatters/noop'
+import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
 const suite = new Suite({
   name: 'Stub'
@@ -103,7 +104,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter())
+        .runTests(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }

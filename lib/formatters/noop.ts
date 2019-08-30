@@ -6,11 +6,7 @@ export class NoopFormatter implements SuitesFormatter, TestFormatter {
   end = noop
   emitFile = noop
   emitTest = noop
-
-  emitError (err: Error): never {
-    throw err
-  }
-
+  emitError = noop
   emitSuite (): NoopFormatter {
     return this
   }

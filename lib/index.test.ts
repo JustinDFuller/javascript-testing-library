@@ -1,7 +1,9 @@
 import { Suites } from './Suites'
 import { SpinnerFormatter } from './formatters/spinner'
+import { ProcessExitStrategy } from './ExitStrategy/Process'
 
 const formatter = new SpinnerFormatter()
+const exitStrategy = new ProcessExitStrategy()
 
 new Suites({
   paths: [
@@ -12,5 +14,6 @@ new Suites({
     './Suite.test',
     './Suites.test'
   ],
-  formatter
+  formatter,
+  exitStrategy
 }).runAll()

@@ -2,6 +2,7 @@ import { Suite } from './Suite'
 import { Assert } from './Assert'
 import { Test, TestActions } from './Test'
 import { NoopFormatter } from './formatters/noop'
+import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
 const suite = new Suite({
   name: 'Test'
@@ -15,6 +16,7 @@ suite.addTest({
     try {
       new Test({
         formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy(),
         name: 'exits with an error when an assertion fails',
         test (t): void {
           t.equal({
@@ -42,6 +44,7 @@ suite.addTest({
     try {
       new Test({
         formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy(),
         name: '',
         test (t: TestActions): void {
           t.equal({
@@ -69,6 +72,7 @@ suite.addTest({
     try {
       new Test({
         formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy(),
         name: '(not calling t.equal at least once)',
         test (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
       }).execute()
@@ -91,6 +95,7 @@ suite.addTest({
     try {
       new Test({
         formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy(),
         name: '(calling t.equal twice)',
         test (_t): void {
           _t.equal({

@@ -8,15 +8,20 @@ export interface TestActions {
   stub(options: StubOptions): void
 }
 
-export interface TestOptions {
-  readonly name: string
-  readonly formatter: TestFormatter
-  test(t: TestActions): void | Promise<void>
-}
-
 export interface TestFormatter {
   emitTest(name: string): void
   emitError(error: Error): void
+}
+
+export interface TestExitStrategy {
+  testError(error: Error): void
+}
+
+export interface TestOptions {
+  readonly name: string
+  readonly formatter: TestFormatter
+  readonly exitStrategy: TestExitStrategy
+  test(t: TestActions): void | Promise<void>
 }
 
 export class Test {
@@ -42,6 +47,7 @@ export class Test {
   @boundMethod
   private handleError (err: Error): void {
     this.options.formatter.emitError(err)
+    this.options.exitStrategy.testError(err)
   }
 
   private validateName (): void | never {

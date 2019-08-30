@@ -1,6 +1,6 @@
-import { Test, TestOptions, TestFormatter } from './test'
+import { Test, TestOptions, TestFormatter, TestExitStrategy } from './test'
 
-type AddTestOptions = Omit<TestOptions, 'formatter'>
+type AddTestOptions = Pick<TestOptions, 'name' | 'test'>
 
 interface SuiteOptions {
   name: string
@@ -42,9 +42,14 @@ export class Suite {
     return formatter.emitSuite(this.name)
   }
 
-  private async executeTests (testFormatter: TestFormatter): Promise<void> {
-    for (const test of this.tests) {
-      await new Test({ ...test, formatter: testFormatter }).execute()
+  private async executeTests (
+    testFormatter: TestFormatter,
+    exitStrategy: TestExitStrategy
+  ): Promise<void> {
+    const formatter = testFormatter
+
+    for (const testOptions of this.tests) {
+      await new Test({ ...testOptions, formatter, exitStrategy }).execute()
     }
   }
 
@@ -59,9 +64,12 @@ export class Suite {
     return this
   }
 
-  runTests (formatter: SuiteFormatter): Promise<void> {
+  runTests (
+    formatter: SuiteFormatter,
+    exitStrategy: TestExitStrategy
+  ): Promise<void> {
     const testFormatter = this.logName(formatter)
     this.validateTests()
-    return this.executeTests(testFormatter)
+    return this.executeTests(testFormatter, exitStrategy)
   }
 }

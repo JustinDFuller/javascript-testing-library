@@ -1,5 +1,6 @@
 import { Suite } from './Suite'
 import { NoopFormatter } from './formatters/noop'
+import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
 const suite = new Suite({
   name: 'Suite'
@@ -13,7 +14,7 @@ suite.addTest({
     try {
       new Suite({
         name: ''
-      }).runTests(new NoopFormatter())
+      }).runTests(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -33,7 +34,7 @@ suite.addTest({
     try {
       new Suite({
         name: '(running a suite with no tests)'
-      }).runTests(new NoopFormatter())
+      }).runTests(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -63,7 +64,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter())
+        .runTests(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }

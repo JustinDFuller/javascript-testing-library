@@ -89,7 +89,6 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
       symbol: symbols.error,
       text: `${this.formatTest()} \n\n${stack}\n`
     })
-    process.exit(1)
   }
 
   end (): void {
@@ -100,6 +99,5 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
         this.testCount
       } Tests Passed in ${this.getRuntime()} seconds\n`
     })
-    process.exit(0)
   }
 }
