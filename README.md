@@ -99,7 +99,7 @@ suite.addTest({
 * [ ] Run each test file in its own process
 * [ ] Find and run related tests
 * [ ] CLI
-* [ ] Gracefully handle invalid test files
+* [x] Gracefully handle invalid test files
 
 ## Output
 

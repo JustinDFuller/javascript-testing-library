@@ -17,6 +17,7 @@
     "build": "tsc",
     "lint:base": "eslint --fix",
     "lint": "npm run lint:base \"lib/**/*.ts\"",
+    "prebuild": "rm -rf ./dist",
     "pretest": "npm run build",
     "prelint": "npm run test",
     "test:watch": "nodemon --watch lib -e ts --delay 0.1 --exec npm run --silent lint"
