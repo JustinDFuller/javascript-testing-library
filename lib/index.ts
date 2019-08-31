@@ -6,7 +6,7 @@ import { ProcessExitStrategy } from './ExitStrategy/Process'
 const formatter = new SpinnerFormatter()
 const exitStrategy = new ProcessExitStrategy()
 
-export async function main(globPattern: string): Promise<void> {
+export async function main (globPattern: string): Promise<void> {
   const paths = await globMatcher(globPattern)
   await new Suites({
     paths,
@@ -14,4 +14,3 @@ export async function main(globPattern: string): Promise<void> {
     exitStrategy
   }).runAll()
 }
-

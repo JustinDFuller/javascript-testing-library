@@ -1,5 +1,3 @@
-import { isFunction } from '../function'
-
 interface ThirdPartyModule {
   [propName: string]: Function
 }
@@ -33,16 +31,10 @@ export class Module {
     }
   }
 
-  private isUnstubbedMethod (method: Function): method is Function {
-    return isFunction(method) && method.name !== 'throwUnstubbedError'
-  }
-
   protected saveOriginalMethod (methodName: string): Module {
     const originalMethod = this.getMethod(methodName)
 
-    if (this.isUnstubbedMethod(originalMethod)) {
-      this.cachedMethods.set(methodName, originalMethod)
-    }
+    this.cachedMethods.set(methodName, originalMethod)
 
     return this
   }

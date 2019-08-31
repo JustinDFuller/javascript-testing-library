@@ -14,7 +14,7 @@ class Exclusions {
     this.exclusions = {
       fs: ['realpathSync' /* this is used by require() */, 'ReadStream'],
       net: ['Socket'], // currently don't understand why this exclusion is needed
-      process: ['kill', '_kill']
+      process: ['kill', '_kill', '_fatalException', 'emit']
     }
   }
 
@@ -33,11 +33,8 @@ export class UnstubbedModule extends Module {
   }
 
   initializeAllMethods (): Module {
-    Object.keys(this.module)
-      .filter(
-        propertyName => !this.exclusions.has(this.moduleName, propertyName)
-      )
-      .forEach(propertyName => {
+    for (const propertyName in this.module) {
+      if (!this.exclusions.has(this.moduleName, propertyName)) {
         const property = this.getMethod(propertyName)
 
         if (isFunction(property)) {
@@ -48,12 +45,17 @@ export class UnstubbedModule extends Module {
               .throwUnstubbedError
           )
         }
-      })
+      }
+    }
 
     return this
   }
 
-  // reimplement swapMethod WITHOUT saving the (currently stubbed) original method
+  /**
+   * Overriding swapMethod here because the original method is already saved.
+   * If you were to save the original method again then it would be overwritten with
+   * the stubbed method
+   */
   swapMethod (methodName: string, returns: Function): Module {
     this.setMethod(methodName, returns)
 

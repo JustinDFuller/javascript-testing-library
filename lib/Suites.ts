@@ -38,16 +38,28 @@ export class Suites {
     this.paths = options.paths
   }
 
+  private requireSuite (path: string): SuiteMeta {
+    return {
+      suite: require(path).suite,
+      path: require.resolve(path)
+    }
+  }
+
+  private async runSuite (suiteMeta: SuiteMeta): Promise<void> {
+    const { path, suite } = suiteMeta
+    this.formatter.emitFile(path)
+
+    if (!suite || !suite.runTests) {
+      throw new Error(format(Suites.INVALID_TEST_ERROR, path))
+    }
+
+    await suite.runTests(this.formatter, this.exitStrategy)
+  }
+
   async runTests (suites: SuiteMeta[]): Promise<void> {
     try {
-      for (const { suite, path } of suites) {
-        this.formatter.emitFile(path)
-
-        if (!suite || !suite.runTests) {
-          throw new Error(format(Suites.INVALID_TEST_ERROR, path))
-        }
-
-        await suite.runTests(this.formatter, this.exitStrategy)
+      for (const suite of suites) {
+        await this.runSuite(suite)
       }
     } catch (error) {
       this.formatter.emitError(error)
@@ -56,12 +68,7 @@ export class Suites {
   }
 
   requireSuites (paths: string[]): SuiteMeta[] {
-    return paths.map(function (path: string) {
-      return {
-        suite: require(path).suite,
-        path: require.resolve(path)
-      }
-    })
+    return paths.map(this.requireSuite)
   }
 
   async runAll (): Promise<void> {
