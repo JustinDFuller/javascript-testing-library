@@ -86,22 +86,6 @@ suite.addTest({
 * Use a setup/teardown construct that shares state between tests.
 * Forget to restore a stubbed function, because they are automatically restored after each test.
 
-## TODO
-* [x] Pretty printed output
-* [x] Automatically stub node http
-* [x] Automatically stub node https
-* [x] Automatically stub node http/2
-* [x] Automatically stub node net
-* [x] Automatically stub node dns
-* [x] Automatically stub node tls
-* [x] Automatically stub node child_process
-* [x] Automatically stub node process
-* [x] Basic CLI
-* [x] Gracefully handle invalid test files
-* [ ] Run each test file in its own process
-* [ ] Find and run related tests
-* [ ] Create documentation from tests
-
 ## Output
 
 ### Error
@@ -120,3 +104,20 @@ Currently averaging ~1300 tests per second. Hoping to have this at ~3k+ tests pe
 ```
 4004 Tests Passed in 3.369 seconds
 ```
+
+## TODO
+* [x] Pretty printed output
+* [x] Automatically stub node http
+* [x] Automatically stub node https
+* [x] Automatically stub node http/2
+* [x] Automatically stub node net
+* [x] Automatically stub node dns
+* [x] Automatically stub node tls
+* [x] Automatically stub node child_process
+* [x] Automatically stub node process
+* [x] Basic CLI
+* [x] Gracefully handle invalid test files
+* [ ] Some sort of multi-thread multi-process perf enhancement
+* [ ] Find and run related tests
+* [ ] Don't allow a method to be stubbed twice in a test
+* [ ] Throw an error if a stub is not used by a test
