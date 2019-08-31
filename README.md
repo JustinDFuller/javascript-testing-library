@@ -113,3 +113,10 @@ Errors show a diff, including for objects an arrays. The stack trace will highli
 
 <img src="https://raw.githubusercontent.com/JustinDFuller/javascript-testing-library/master/docs/Output.png" width="100%" />
 
+## Benchmark
+
+Currently averaging ~1300 tests per second. Hoping to have this at ~3k+ tests per second.
+
+```
+4004 Tests Passed in 3.369 seconds
+```
