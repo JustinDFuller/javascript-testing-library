@@ -25,8 +25,8 @@
     "pretest": "npm run build",
     "prelint": "npm run test",
     "test:watch": "nodemon --watch lib -e ts --delay 0.1 --exec npm run --silent lint",
-    "flame": "clinic flame -- node ./bin/javascript-testing-library.js 'dist/**/*.test.js'",
-    "clinic": "clinic doctor -- node ./bin/javascript-testing-library.js 'dist/**/*.test.js'"
+    "flame": "clinic flame -- node ./bin/javascript-testing-library.js 'benchmark/*.test.js'",
+    "clinic": "clinic doctor -- node ./bin/javascript-testing-library.js 'benchmark/*.test.js'"
   },
   "name": "javascript-testing-library",
   "version": "0.0.0",
