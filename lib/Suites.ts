@@ -1,4 +1,6 @@
+import { extname } from 'path'
 import { format } from 'util'
+import { register } from 'ts-node'
 
 import { TestExitStrategy } from './Test'
 import { Suite, SuiteFormatter } from './Suite'
@@ -25,6 +27,7 @@ interface SuiteMeta {
 }
 
 export class Suites {
+  static registered = false
   static readonly INVALID_TEST_ERROR =
     'Invalid test encountered. Make sure suite is exported. Test File: %s'
 
@@ -39,6 +42,11 @@ export class Suites {
   }
 
   private requireSuite (path: string): SuiteMeta {
+    if (!Suites.registered && extname(path) === '.ts') {
+      Suites.registered = true
+      register()
+    }
+
     return {
       suite: require(path).suite,
       path: require.resolve(path)
@@ -56,6 +64,10 @@ export class Suites {
     await suite.runTests(this.formatter, this.exitStrategy)
   }
 
+  private requireSuites (paths: string[]): SuiteMeta[] {
+    return paths.map(this.requireSuite)
+  }
+
   async runTests (suites: SuiteMeta[]): Promise<void> {
     try {
       for (const suite of suites) {
@@ -65,10 +77,6 @@ export class Suites {
       this.formatter.emitError(error)
       this.exitStrategy.testError(error)
     }
-  }
-
-  requireSuites (paths: string[]): SuiteMeta[] {
-    return paths.map(this.requireSuite)
   }
 
   async runAll (): Promise<void> {

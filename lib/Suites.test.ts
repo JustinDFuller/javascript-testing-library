@@ -114,3 +114,67 @@ suite.addTest({
     })
   }
 })
+
+suite.addTest({
+  name: 'uses ts-node/register for typescript files',
+  async test (t) {
+    let called = false
+
+    t.stub({
+      module: 'ts-node',
+      method: 'register',
+      returns () {
+        // best just to stop processing after register is called
+        called = true
+        throw new Error('Called')
+      }
+    })
+
+    try {
+      Suites.registered = false
+
+      await new Suites({
+        paths: ['path/to/file.ts'],
+        formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy()
+      }).runAll()
+    } catch (e) {}
+
+    t.equal({
+      expected: true,
+      actual: called
+    })
+  }
+})
+
+suite.addTest({
+  name: 'Does not use ts-node/register for non-typescript files',
+  async test (t) {
+    let error = new Error('Should have thrown cannot find module error')
+
+    t.stub({
+      module: 'ts-node',
+      method: 'register',
+      returns () {
+        throw new Error('Called')
+      }
+    })
+
+    Suites.registered = false
+
+    try {
+      await new Suites({
+        paths: ['path/to/file.js'],
+        formatter: new NoopFormatter(),
+        exitStrategy: new ThrowExitStrategy()
+      }).runAll()
+    } catch (e) {
+      error = e.message.split('\n')[0]
+    }
+
+    t.equal({
+      expected: "Cannot find module 'path/to/file.js'",
+      actual: error
+    })
+  }
+})

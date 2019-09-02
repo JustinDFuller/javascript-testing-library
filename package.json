@@ -17,7 +17,7 @@
   },
   "scripts": {
     "format": "prettier-standard \"{benchmark,lib,test,bin}/**/*.{ts,js}\"",
-    "test": "./bin/javascript-testing-library.js 'dist/**/*.test.js'",
+    "test": "./bin/javascript-testing-library.js 'lib/**/*.test.ts'",
     "build": "tsc",
     "lint:base": "eslint --fix",
     "lint": "npm run lint:base \"lib/**/*.ts\"",
@@ -76,6 +76,7 @@
     "figures": "^3.0.0",
     "glob": "^7.1.4",
     "log-symbols": "^3.0.0",
-    "ora": "^3.4.0"
+    "ora": "^3.4.0",
+    "ts-node": "^8.3.0"
   }
 }
