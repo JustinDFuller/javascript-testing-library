@@ -1,6 +1,6 @@
 import { Assert } from './'
 import { Suite } from '../Suite'
-import { TestActions } from '../test'
+import { TestActions } from '../Test'
 
 const suite = new Suite({
   name: 'Assert'
