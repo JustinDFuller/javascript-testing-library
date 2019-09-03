@@ -1,0 +1,13 @@
+kind: pipeline
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: integration
+  - image: node
+  - commands:
+    - npm install
+    - npm run lint 
