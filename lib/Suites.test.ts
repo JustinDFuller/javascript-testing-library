@@ -1,6 +1,6 @@
 import { format } from 'util'
 
-import { Suite } from './Suite'
+import { Suite, TestActions } from './'
 import { Suites } from './Suites'
 import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
@@ -11,7 +11,7 @@ export const suite = new Suite({
 
 suite.addTest({
   name: 'runs tests in a consistent order',
-  async test (t) {
+  async test (t: TestActions) {
     const order: number[] = []
 
     await new Suites({
@@ -26,7 +26,7 @@ suite.addTest({
         })
           .addTest({
             name: '(consistent order test 1)',
-            async test (t) {
+            async test (t: TestActions) {
               await Promise.resolve()
               order.push(1)
 
@@ -38,7 +38,7 @@ suite.addTest({
           })
           .addTest({
             name: '(consistent order test 2)',
-            test (t) {
+            test (t: TestActions) {
               order.push(2)
 
               t.equal({
@@ -55,7 +55,7 @@ suite.addTest({
         })
           .addTest({
             name: '(consistent order test 3)',
-            test (t) {
+            test (t: TestActions) {
               order.push(3)
 
               t.equal({
@@ -66,7 +66,7 @@ suite.addTest({
           })
           .addTest({
             name: '(consistent order test 4)',
-            test (t) {
+            test (t: TestActions) {
               order.push(4)
 
               t.equal({
@@ -87,7 +87,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'handles invalid test files',
-  async test (t) {
+  async test (t: TestActions) {
     const path = '/path/to/file.test.ts'
     let error = new Error('Expected an error to be called')
 
@@ -117,7 +117,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'uses ts-node/register for typescript files',
-  async test (t) {
+  async test (t: TestActions) {
     let called = false
 
     t.stub({
@@ -149,7 +149,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'Does not use ts-node/register for non-typescript files',
-  async test (t) {
+  async test (t: TestActions) {
     let error = new Error('Should have thrown cannot find module error')
 
     t.stub({

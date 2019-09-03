@@ -1,4 +1,4 @@
-import { Suite } from './Suite'
+import { Suite, TestActions } from './'
 import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
@@ -8,7 +8,7 @@ const suite = new Suite({
 
 suite.addTest({
   name: 'requires a name',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -28,7 +28,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'throws an error if there are no tests added',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -48,7 +48,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'provides an addTest method that adds a test to the suite',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {

@@ -1,6 +1,6 @@
-import { Suite } from './Suite'
+import { Test } from './Test'
 import { Assert } from './Assert'
-import { Test, TestActions } from './Test'
+import { Suite, TestActions } from './'
 import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
@@ -10,7 +10,7 @@ const suite = new Suite({
 
 suite.addTest({
   name: 'provides a t.equal function that performs a deep assertion',
-  test (t) {
+  test (t: TestActions) {
     let err
 
     try {
@@ -38,7 +38,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'throws an error if name is not provided',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -89,7 +89,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'throws an error if t.equal is called more than once',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -121,7 +121,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'handles async functions',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {

@@ -1,4 +1,4 @@
-import { Suite } from './Suite'
+import { Suite, TestActions } from './'
 
 import { globMatcher } from './glob'
 
@@ -8,7 +8,7 @@ export const suite = new Suite({
 
 suite.addTest({
   name: 'returns an array of matched file paths',
-  async test (t) {
+  async test (t: TestActions) {
     const expected = [
       '/path/to/current-dir/lib/Assert/index.test.ts',
       '/path/to/current-dir/lib/Test.test.ts'

@@ -1,6 +1,6 @@
 import fs from 'fs'
 
-import { Suite } from '../Suite'
+import { Suite, TestActions } from '../'
 import { UnstubbedDependency } from './UnstubbedDependency'
 
 export const suite = new Suite({
@@ -9,7 +9,7 @@ export const suite = new Suite({
 
 suite.addTest({
   name: 'automatically mocks the fs module',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -31,7 +31,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the HTTP module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -51,7 +51,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the HTTP/2 module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -71,7 +71,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the net module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -91,7 +91,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the dns module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -111,7 +111,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the tls module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -131,7 +131,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the child_process module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -151,7 +151,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically mocks the process module',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {

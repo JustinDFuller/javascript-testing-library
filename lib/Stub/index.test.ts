@@ -1,8 +1,8 @@
 import fs from 'fs'
 import ts from 'typescript'
 
-import { Suite } from '../Suite'
 import { Module } from './Module'
+import { Suite, TestActions } from '../'
 import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
@@ -12,7 +12,7 @@ const suite = new Suite({
 
 suite.addTest({
   name: 'allows you to mock the response of an external module',
-  async test (t) {
+  async test (t: TestActions) {
     t.stub({
       module: 'fs',
       method: 'readFile',
@@ -41,7 +41,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'does not allow stubbing an internal module',
-  test (t) {
+  test (t: TestActions) {
     let error
 
     try {
@@ -65,7 +65,7 @@ suite.addTest({
 
 suite.addTest({
   name: 'automatically restores modules that were mocked',
-  async test (t) {
+  async test (t: TestActions) {
     let error
 
     try {
@@ -74,7 +74,7 @@ suite.addTest({
       })
         .addTest({
           name: '(mocking typescript)',
-          test (t) {
+          test (t: TestActions) {
             t.stub({
               module: 'typescript',
               method: 'transpileModule',
@@ -95,7 +95,7 @@ suite.addTest({
         })
         .addTest({
           name: '(using typescript transpileModule without stubbing it)',
-          test (t) {
+          test (t: TestActions) {
             const { outputText } = ts.transpileModule('let test = 1', {})
 
             t.equal({
