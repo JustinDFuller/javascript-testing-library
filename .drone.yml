@@ -7,9 +7,9 @@ platform:
 
 steps:
   - name: integration
-    image: node
+    image: node:12
     commands:
-    - npm install
+    - npm ci
     - npm run build
     - npm run test
     - npm run lint 
