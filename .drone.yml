@@ -18,11 +18,11 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: WindowsAMD64
+name: LinuxArm64
 
 platform:
-  os: windows
-  arch: amd64
+  os: linux
+  arch: arm64
 
 steps:
   - name: integration
