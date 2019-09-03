@@ -7,7 +7,7 @@ platform:
 
 steps:
   - name: integration
-  - image: node
-  - commands:
+    image: node
+    commands:
     - npm install
     - npm run lint 
