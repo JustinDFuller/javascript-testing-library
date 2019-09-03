@@ -1,9 +1,11 @@
+import { StubOptions } from './Stub'
 import { Test, TestOptions, TestFormatter, TestExitStrategy } from './Test'
 
 type AddTestOptions = Pick<TestOptions, 'name' | 'test' | 'stubs'>
 
 interface SuiteOptions {
   name: string
+  stubs?: StubOptions[]
 }
 
 export interface SuiteFormatter {
@@ -16,11 +18,13 @@ export class Suite {
     'At least one test is required for each suite.'
 
   private readonly name: string
+  private readonly stubs: StubOptions[]
   private readonly tests: Set<AddTestOptions>
 
   constructor (options: SuiteOptions) {
     this.tests = new Set()
     this.name = options.name
+    this.stubs = options.stubs || []
   }
 
   private isNameInvalid (): boolean {
@@ -49,7 +53,13 @@ export class Suite {
     const formatter = testFormatter
 
     for (const testOptions of this.tests) {
-      await new Test({ ...testOptions, formatter, exitStrategy }).execute()
+      const options = {
+        ...testOptions,
+        formatter,
+        exitStrategy,
+        stubs: this.stubs.concat(testOptions.stubs || [])
+      }
+      await new Test(options).execute()
     }
   }
 
