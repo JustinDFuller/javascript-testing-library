@@ -19,6 +19,7 @@ export interface TestExitStrategy {
 
 export interface TestOptions {
   readonly name: string
+  readonly stubs?: StubOptions[]
   readonly formatter: TestFormatter
   readonly exitStrategy: TestExitStrategy
   test(t: TestActions): void | Promise<void>
@@ -69,11 +70,19 @@ export class Test {
     this.options.formatter.emitTest(this.options.name)
   }
 
+  private initializeStubs (): void {
+    if (this.options.stubs) {
+      this.options.stubs.forEach(this.stub.add)
+    }
+  }
+
   execute (): void | Promise<void> {
     this.emitTest()
     this.stub.init()
 
     try {
+      this.initializeStubs()
+
       const promise = this.options.test({
         equal: this.assert.equal,
         stub: this.stub.add

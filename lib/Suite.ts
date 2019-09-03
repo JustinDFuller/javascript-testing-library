@@ -1,6 +1,6 @@
 import { Test, TestOptions, TestFormatter, TestExitStrategy } from './Test'
 
-type AddTestOptions = Pick<TestOptions, 'name' | 'test'>
+type AddTestOptions = Pick<TestOptions, 'name' | 'test' | 'stubs'>
 
 interface SuiteOptions {
   name: string

@@ -1,3 +1,5 @@
+import fs from 'fs'
+
 import { Test } from './Test'
 import { Assert } from './Assert'
 import { Suite, TestActions } from './'
@@ -138,6 +140,29 @@ suite.addTest({
     t.equal({
       expected: 'Expected error.',
       actual: error.message
+    })
+  }
+})
+
+suite.addTest({
+  name: 'accepts an array of stubs that are applied before the test is run',
+  stubs: [
+    {
+      module: 'fs',
+      method: 'readdir',
+      returns (dir: string, callback: Function) {
+        callback(null, [dir])
+      }
+    }
+  ],
+  async test (t) {
+    const actual = await new Promise(function (resolve) {
+      fs.readdir('dir', (_err: Error | null, res: string[]) => resolve(res))
+    })
+
+    t.equal({
+      actual,
+      expected: ['dir']
     })
   }
 })
