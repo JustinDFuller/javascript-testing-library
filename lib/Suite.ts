@@ -1,4 +1,4 @@
-import { Test, TestOptions, TestFormatter, TestExitStrategy } from './test'
+import { Test, TestOptions, TestFormatter, TestExitStrategy } from './Test'
 
 type AddTestOptions = Pick<TestOptions, 'name' | 'test'>
 

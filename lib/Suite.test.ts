@@ -57,7 +57,7 @@ suite.addTest({
       })
         .addTest({
           name: '(creating a test inside the addTest test)',
-          test (_t) {
+          test (_t: TestActions) {
             _t.equal({
               expected: 1,
               actual: 2
