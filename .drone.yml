@@ -2,7 +2,7 @@ kind: pipeline
 name: default
 
 platform:
-  os: linux
+  os: darwin
   arch: amd64
 
 steps:
