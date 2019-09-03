@@ -1,5 +1,7 @@
 # javascript-testing-library
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/JustinDFuller/javascript-testing-library.svg)](https://greenkeeper.io/)
+
 A highly opinionated testing library for JavaScript
 
 ## Install
