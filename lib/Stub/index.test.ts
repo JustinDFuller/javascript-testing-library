@@ -12,8 +12,8 @@ const suite = new Suite({
 
 suite.addTest({
   name: 'allows you to mock the response of an external module',
-  async test (t: TestActions) {
-    t.stub({
+  stubs: [
+    {
       module: 'fs',
       method: 'readFile',
       returns (
@@ -23,8 +23,9 @@ suite.addTest({
       ) {
         return callback(null, `You are trying to read ${file}`)
       }
-    })
-
+    }
+  ],
+  async test (t: TestActions) {
     const actual = await new Promise(function (resolve, reject): void {
       fs.readFile('filename.jpg', 'utf8', function (err, res) {
         if (err) return reject(err)
@@ -74,8 +75,8 @@ suite.addTest({
       })
         .addTest({
           name: '(mocking typescript)',
-          test (t: TestActions) {
-            t.stub({
+          stubs: [
+            {
               module: 'typescript',
               method: 'transpileModule',
               returns () {
@@ -83,8 +84,9 @@ suite.addTest({
                   outputText: 'fake output text'
                 }
               }
-            })
-
+            }
+          ],
+          test (t: TestActions) {
             const { outputText } = ts.transpileModule('let test = 1', {})
 
             t.equal({

@@ -8,21 +8,15 @@ export const suite = new Suite({
 
 suite.addTest({
   name: 'returns an array of matched file paths',
-  async test (t: TestActions) {
-    const expected = [
-      '/path/to/current-dir/lib/Assert/index.test.ts',
-      '/path/to/current-dir/lib/Test.test.ts'
-    ]
-
-    t.stub({
+  stubs: [
+    {
       module: 'process',
       method: 'cwd',
       returns () {
         return '/path/to/current-dir'
       }
-    })
-
-    t.stub({
+    },
+    {
       module: 'fs',
       method: 'readdir',
       returns (dir: string, callback: Function): void {
@@ -38,7 +32,13 @@ suite.addTest({
 
         callback(null, ['Test.test.ts', 'Assert'])
       }
-    })
+    }
+  ],
+  async test (t: TestActions) {
+    const expected = [
+      '/path/to/current-dir/lib/Assert/index.test.ts',
+      '/path/to/current-dir/lib/Test.test.ts'
+    ]
 
     const actual = await globMatcher('lib/**/*.ts')
 

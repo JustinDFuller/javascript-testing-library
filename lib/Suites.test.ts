@@ -117,18 +117,18 @@ suite.addTest({
 
 suite.addTest({
   name: 'uses ts-node/register for typescript files',
-  async test (t: TestActions) {
-    let called = false
-
-    t.stub({
+  stubs: [
+    {
       module: 'ts-node',
       method: 'register',
       returns () {
         // best just to stop processing after register is called
-        called = true
         throw new Error('Called')
       }
-    })
+    }
+  ],
+  async test (t: TestActions) {
+    let error = new Error('expected to be called')
 
     try {
       Suites.registered = false
@@ -138,27 +138,30 @@ suite.addTest({
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
       }).runAll()
-    } catch (e) {}
+    } catch (e) {
+      error = e
+    }
 
     t.equal({
-      expected: true,
-      actual: called
+      expected: 'Called',
+      actual: error.message
     })
   }
 })
 
 suite.addTest({
   name: 'Does not use ts-node/register for non-typescript files',
-  async test (t: TestActions) {
-    let error = new Error('Should have thrown cannot find module error')
-
-    t.stub({
+  stubs: [
+    {
       module: 'ts-node',
       method: 'register',
       returns () {
         throw new Error('Called')
       }
-    })
+    }
+  ],
+  async test (t: TestActions) {
+    let error = new Error('Should have thrown cannot find module error')
 
     Suites.registered = false
 
