@@ -22,8 +22,8 @@
     "lint:base": "eslint --fix",
     "lint": "npm run lint:base \"lib/**/*.ts\"",
     "prebuild": "rm -rf ./dist",
-    "prelint": "npm run test",
     "test:watch": "nodemon --watch lib -e ts --delay 0.1 --exec npm run --silent lint",
+    "benchmark": "./bin/javascript-testing-library.js 'benchmark/*.test.js'",
     "flame": "clinic flame -- node ./bin/javascript-testing-library.js 'benchmark/*.test.js'",
     "clinic": "clinic doctor -- node ./bin/javascript-testing-library.js 'benchmark/*.test.js'"
   },
