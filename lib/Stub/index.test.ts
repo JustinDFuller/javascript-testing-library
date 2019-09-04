@@ -42,17 +42,32 @@ suite.addTest({
 
 suite.addTest({
   name: 'does not allow stubbing an internal module',
-  test (t: TestActions) {
-    let error
+  async test (t: TestActions) {
+    let error = new Error('Expected an error to be thrown.')
 
     try {
-      t.stub({
-        module: './assert',
-        method: 'Assert',
-        returns () {
-          throw new Error('Assert stub should not have been called')
-        }
+      await new Suite({
+        name: '(stubbing internal module)'
       })
+        .addTest({
+          name: '(stubbing internal module)',
+          stubs: [
+            {
+              module: './assert',
+              method: 'Assert',
+              returns () {
+                throw new Error('Assert stub should not have been called')
+              }
+            }
+          ],
+          test (_t: TestActions) {
+            _t.equal({
+              expected: 1,
+              actual: 1
+            })
+          }
+        })
+        .runTests(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }

@@ -5,7 +5,6 @@ import { Assert, AssertOptions } from './Assert'
 
 export interface TestActions {
   equal(options: AssertOptions): void
-  stub(options: StubOptions): void
 }
 
 export interface TestFormatter {
@@ -84,8 +83,7 @@ export class Test {
       this.initializeStubs()
 
       const promise = this.options.test({
-        equal: this.assert.equal,
-        stub: this.stub.add
+        equal: this.assert.equal
       })
 
       if (this.isPromise(promise)) {
