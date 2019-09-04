@@ -27,6 +27,14 @@ export class Stub {
     this.stubbedModules = new Map()
   }
 
+  private getNewModuleByType (moduleName: string): Module {
+    if (automaticallyMockedModules.includes(moduleName)) {
+      return new UnstubbedModule(moduleName)
+    }
+
+    return new Module(moduleName)
+  }
+
   private getModule (moduleName: string): Module {
     const mod = this.stubbedModules.get(moduleName)
 
@@ -34,14 +42,12 @@ export class Stub {
       return mod
     }
 
-    this.stubbedModules.set(moduleName, new Module(moduleName))
+    this.stubbedModules.set(moduleName, this.getNewModuleByType(moduleName))
     return this.getModule(moduleName)
   }
 
   init (): void {
-    automaticallyMockedModules.forEach(moduleName =>
-      this.stubbedModules.set(moduleName, new UnstubbedModule(moduleName))
-    )
+    automaticallyMockedModules.forEach(moduleName => this.getModule(moduleName))
   }
 
   @boundMethod

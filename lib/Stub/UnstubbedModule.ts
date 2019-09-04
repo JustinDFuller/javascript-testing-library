@@ -12,16 +12,8 @@ class Exclusions {
 
   constructor () {
     this.exclusions = {
-      fs: [
-        'realpathSync' /* this is used by require() */,
-        'ReadStream',
-        'readFileSync',
-        'openSync',
-        'closeSync',
-        'readSync'
-      ],
       net: ['Socket'], // currently don't understand why this exclusion is needed
-      process: ['kill', '_kill', '_fatalException', 'emit']
+      process: ['kill', 'cwd']
     }
   }
 
@@ -45,8 +37,7 @@ export class UnstubbedModule extends Module {
         const property = this.getMethod(propertyName)
 
         if (isFunction(property)) {
-          this.saveOriginalMethod(propertyName)
-          this.setMethod(
+          this.swapMethod(
             propertyName,
             new UnstubbedDependency(this.moduleName, propertyName)
               .throwUnstubbedError
@@ -54,17 +45,6 @@ export class UnstubbedModule extends Module {
         }
       }
     }
-
-    return this
-  }
-
-  /**
-   * Overriding swapMethod here because the original method is already saved.
-   * If you were to save the original method again then it would be overwritten with
-   * the stubbed method
-   */
-  swapMethod (methodName: string, returns: Function): Module {
-    this.setMethod(methodName, returns)
 
     return this
   }

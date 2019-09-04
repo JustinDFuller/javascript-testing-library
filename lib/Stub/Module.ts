@@ -31,15 +31,17 @@ export class Module {
     }
   }
 
-  protected saveOriginalMethod (methodName: string): Module {
+  private saveOriginalMethod (methodName: string): Module {
     const originalMethod = this.getMethod(methodName)
 
-    this.cachedMethods.set(methodName, originalMethod)
+    if (!this.cachedMethods.has(methodName)) {
+      this.cachedMethods.set(methodName, originalMethod)
+    }
 
     return this
   }
 
-  protected setMethod (methodName: string, returns: Function): Module {
+  private setMethod (methodName: string, returns: Function): Module {
     this.module[methodName] = returns
 
     return this

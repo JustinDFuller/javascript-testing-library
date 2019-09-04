@@ -77,10 +77,10 @@ export class Test {
 
   execute (): void | Promise<void> {
     this.emitTest()
-    this.stub.init()
 
     try {
       this.initializeStubs()
+      this.stub.init()
 
       const promise = this.options.test({
         equal: this.assert.equal
