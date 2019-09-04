@@ -12,8 +12,9 @@ class Exclusions {
 
   constructor () {
     this.exclusions = {
+      fs: ['ReadStream'],
       net: ['Socket'], // currently don't understand why this exclusion is needed
-      process: ['kill', 'cwd']
+      process: ['kill', 'exit']
     }
   }
 
