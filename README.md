@@ -37,17 +37,6 @@ export const suite = Suite({
 suite.addTest({
   name: 'can upsert a user with only a name',
   async test(t) {
-    t.stub({
-      module: 'sequelize',
-      method: 'upsert',
-      returns(options) {
-        return {
-          id: 1,
-          name: options.name,
-        }
-      }
-    })
-
     const user = User({
       name: 'Justin'
     })
@@ -61,7 +50,19 @@ suite.addTest({
       },
       actual
     })
-  }
+  },
+  stubs: [
+    {
+      module: 'sequelize',
+      method: 'upsert',
+      returns(options) {
+        return {
+          id: 1,
+          name: options.name,
+        }
+      }
+    }
+  ]
 })
 ```
 
