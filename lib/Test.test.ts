@@ -1,4 +1,5 @@
 import fs from 'fs'
+import assert from 'assert'
 
 import { Test } from './Test'
 import { Assert } from './Assert'
@@ -32,8 +33,8 @@ suite.addTest({
     }
 
     t.equal({
-      expected: 'Expected values to be strictly deep-equal:\n\n2 !== 1\n',
-      actual: err.message
+      expected: assert.AssertionError,
+      actual: err.constructor
     })
   }
 })

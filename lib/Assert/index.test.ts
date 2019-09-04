@@ -1,3 +1,5 @@
+import assert from 'assert'
+
 import { Assert } from './'
 import { Suite, TestActions } from '../'
 
@@ -20,8 +22,8 @@ suite.addTest({
     }
 
     t.equal({
-      actual: error.message,
-      expected: 'Expected values to be strictly deep-equal:\n\n2 !== 1\n'
+      actual: error.constructor,
+      expected: assert.AssertionError
     })
   }
 })

@@ -1,4 +1,5 @@
 import fs from 'fs'
+import assert from 'assert'
 import { promisify } from 'util'
 
 import { Suite, TestActions } from './'
@@ -89,8 +90,8 @@ suite.addTest({
     }
 
     t.equal({
-      expected: 'Expected values to be strictly deep-equal:\n\n2 !== 1\n',
-      actual: error.message
+      expected: assert.AssertionError,
+      actual: error.constructor
     })
   }
 })
