@@ -20,8 +20,8 @@ suite.addTest({
         file: string,
         _options: string,
         callback: (err: Error | null, res: string) => void
-      ) {
-        return callback(null, `You are trying to read ${file}`)
+      ): void {
+        callback(null, `You are trying to read ${file}`)
       }
     }
   ],
@@ -55,7 +55,7 @@ suite.addTest({
             {
               module: './assert',
               method: 'Assert',
-              returns () {
+              returns (): never {
                 throw new Error('Assert stub should not have been called')
               }
             }
@@ -94,7 +94,7 @@ suite.addTest({
             {
               module: 'typescript',
               method: 'transpileModule',
-              returns () {
+              returns (): object {
                 return {
                   outputText: 'fake output text'
                 }

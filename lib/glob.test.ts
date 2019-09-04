@@ -12,7 +12,7 @@ suite.addTest({
     {
       module: 'process',
       method: 'cwd',
-      returns () {
+      returns (): string {
         return '/path/to/current-dir'
       }
     },

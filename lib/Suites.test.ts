@@ -6,7 +6,17 @@ import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
 export const suite = new Suite({
-  name: 'Suites'
+  name: 'Suites',
+  stubs: [
+    {
+      module: 'ts-node',
+      method: 'register',
+      returns (): never {
+        // best just to stop processing after register is called
+        throw new Error('Called')
+      }
+    }
+  ]
 })
 
 suite.addTest({
@@ -117,16 +127,6 @@ suite.addTest({
 
 suite.addTest({
   name: 'uses ts-node/register for typescript files',
-  stubs: [
-    {
-      module: 'ts-node',
-      method: 'register',
-      returns () {
-        // best just to stop processing after register is called
-        throw new Error('Called')
-      }
-    }
-  ],
   async test (t: TestActions) {
     let error = new Error('expected to be called')
 
@@ -151,15 +151,6 @@ suite.addTest({
 
 suite.addTest({
   name: 'Does not use ts-node/register for non-typescript files',
-  stubs: [
-    {
-      module: 'ts-node',
-      method: 'register',
-      returns () {
-        throw new Error('Called')
-      }
-    }
-  ],
   async test (t: TestActions) {
     let error = new Error('Should have thrown cannot find module error')
 

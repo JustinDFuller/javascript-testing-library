@@ -151,13 +151,13 @@ suite.addTest({
     {
       module: 'fs',
       method: 'readdir',
-      returns (dir: string, callback: Function) {
+      returns (dir: string, callback: Function): void {
         callback(null, [dir])
       }
     }
   ],
   async test (t) {
-    const actual = await new Promise(function (resolve) {
+    const actual = await new Promise(function (resolve): void {
       fs.readdir('dir', (_err: Error | null, res: string[]) => resolve(res))
     })
 

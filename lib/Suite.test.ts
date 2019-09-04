@@ -12,14 +12,14 @@ const suite = new Suite({
     {
       module: 'fs',
       method: 'readFile',
-      returns (filePath: string, callback: Function) {
+      returns (filePath: string, callback: Function): void {
         callback(null, filePath)
       }
     },
     {
       module: 'fs',
       method: 'stat',
-      returns (filePath: string, callback: Function) {
+      returns (filePath: string, callback: Function): void {
         callback(null, filePath)
       }
     }
