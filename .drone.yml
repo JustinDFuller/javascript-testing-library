@@ -1,6 +1,6 @@
 kind: pipeline
 type: docker
-name: LinuxAMD64
+name: Node12LinuxAMD64
 
 platform:
   os: linux
@@ -16,6 +16,25 @@ steps:
     - npm run lint 
 
 ---
+kind: pipeline
+type: docker
+name: Node10LinuxAMD64
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+  - name: integration
+    image: node:10
+    commands:
+    - npm ci
+    - npm run build
+    - npm run test
+    - npm run lint 
+
+---
+
 kind: pipeline
 type: docker
 name: LinuxArm64
