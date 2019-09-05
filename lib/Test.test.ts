@@ -93,31 +93,25 @@ suite.addTest({
 suite.addTest({
   name: 'throws an error if t.equal is called more than once',
   test (t: TestActions) {
-    let error
-
-    try {
-      new Test({
-        formatter: new NoopFormatter(),
-        exitStrategy: new ThrowExitStrategy(),
-        name: '(calling t.equal twice)',
-        test (_t): void {
-          _t.equal({
-            expected: 1,
-            actual: 1
-          })
-          _t.equal({
-            expected: 2,
-            actual: 1
-          })
-        }
-      }).execute()
-    } catch (e) {
-      error = e
-    }
-
-    t.equal({
+    t.throws({
       expected: Assert.CALLED_MORE_THAN_ONCE_ERROR,
-      actual: error.message
+      actual () {
+        new Test({
+          formatter: new NoopFormatter(),
+          exitStrategy: new ThrowExitStrategy(),
+          name: '(calling t.equal twice)',
+          test (_t): void {
+            _t.equal({
+              expected: 1,
+              actual: 1
+            })
+            _t.equal({
+              expected: 2,
+              actual: 1
+            })
+          }
+        }).execute()
+      }
     })
   }
 })
@@ -125,22 +119,18 @@ suite.addTest({
 suite.addTest({
   name: 'handles async functions',
   async test (t: TestActions) {
-    let error
+    class FakeError extends Error {}
 
-    try {
-      // eslint-disable-next-line promise/param-names
-      await new Promise(function (_resolve, reject): void {
-        setTimeout(function () {
-          reject(new Error('Expected error.'))
+    await t.throws({
+      expected: FakeError,
+      async actual () {
+        // eslint-disable-next-line promise/param-names
+        await new Promise(function (_resolve, reject): void {
+          setTimeout(function () {
+            reject(new FakeError())
+          })
         })
-      })
-    } catch (e) {
-      error = e
-    }
-
-    t.equal({
-      expected: 'Expected error.',
-      actual: error.message
+      }
     })
   }
 })
