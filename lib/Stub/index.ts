@@ -2,7 +2,6 @@ import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
 import { UnstubbedModule } from './UnstubbedModule'
-import { UserStubbedModule } from './UserStubbedModule'
 
 const automaticallyMockedModules = [
   'fs',
@@ -37,7 +36,7 @@ export class Stub {
       return new UnstubbedModule(moduleName)
     }
 
-    return new UserStubbedModule(moduleName)
+    return new Module(moduleName)
   }
 
   private getModule (moduleName: string): Module {

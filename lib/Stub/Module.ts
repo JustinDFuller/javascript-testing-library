@@ -1,5 +1,48 @@
+import { boundMethod } from 'autobind-decorator'
+
 interface ThirdPartyModule {
   [propName: string]: Function
+}
+
+interface StubbedMethodOptions {
+  stub: Function
+  moduleName: string
+  methodName: string
+}
+
+export class StubNotUsedError extends Error {
+  constructor (moduleName: string, methodName: string) {
+    super(
+      `Expected stub to be called at least once. ${moduleName}.${methodName}`
+    )
+  }
+}
+
+class StubbedMethod {
+  private called = false
+  private readonly stub: Function
+  private readonly moduleName: string
+  private readonly methodName: string
+
+  constructor (options: StubbedMethodOptions) {
+    this.stub = options.stub
+    this.moduleName = options.moduleName
+    this.methodName = options.methodName
+  }
+
+  @boundMethod
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  execute (...args: any[]): any {
+    this.called = true
+    return this.stub(...args)
+  }
+
+  @boundMethod
+  ensureCalled (): void | never {
+    if (this.called === false) {
+      throw new StubNotUsedError(this.moduleName, this.methodName)
+    }
+  }
 }
 
 export class Module {
@@ -9,12 +52,14 @@ export class Module {
   protected readonly moduleName: string
   protected readonly module: ThirdPartyModule
   private readonly cachedMethods: Map<string, Function>
+  private readonly stubbedMethods: Map<string, StubbedMethod>
 
   constructor (moduleName: string) {
     this.moduleName = moduleName
     this.validateModuleName()
     this.module = require(moduleName)
     this.cachedMethods = new Map()
+    this.stubbedMethods = new Map()
   }
 
   private throwInternalModuleError (): never {
@@ -31,7 +76,7 @@ export class Module {
     }
   }
 
-  private saveOriginalMethod (methodName: string): Module {
+  protected saveOriginalMethod (methodName: string): Module {
     const originalMethod = this.getMethod(methodName)
 
     if (!this.cachedMethods.has(methodName)) {
@@ -39,6 +84,14 @@ export class Module {
     }
 
     return this
+  }
+
+  private ensureStubsCalled (): never | void {
+    this.stubbedMethods.forEach(
+      (stub: StubbedMethod): never | void => {
+        stub.ensureCalled()
+      }
+    )
   }
 
   protected setMethod (methodName: string, returns: Function): Module {
@@ -61,12 +114,21 @@ export class Module {
 
   swapMethod (methodName: string, returns: Function): Module {
     this.saveOriginalMethod(methodName)
-    this.setMethod(methodName, returns)
+
+    const stub = new StubbedMethod({
+      stub: returns,
+      methodName,
+      moduleName: this.moduleName
+    })
+
+    this.stubbedMethods.set(methodName, stub)
+    this.setMethod(methodName, stub.execute)
 
     return this
   }
 
   reset (): Module {
+    this.ensureStubsCalled()
     this.resetCachedMethods()
 
     return this

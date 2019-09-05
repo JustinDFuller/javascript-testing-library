@@ -1,29 +1,11 @@
-import fs from 'fs'
 import assert from 'assert'
-import { promisify } from 'util'
 
 import { Suite, TestActions } from './'
 import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
-const suite = new Suite({
-  name: 'Suite',
-  stubs: [
-    {
-      module: 'fs',
-      method: 'readFile',
-      returns (filePath: string, callback: Function): void {
-        callback(null, filePath)
-      }
-    },
-    {
-      module: 'fs',
-      method: 'stat',
-      returns (filePath: string, callback: Function): void {
-        callback(null, filePath)
-      }
-    }
-  ]
+export const suite = new Suite({
+  name: 'Suite'
 })
 
 suite.addTest({
@@ -95,22 +77,3 @@ suite.addTest({
     })
   }
 })
-
-suite.addTest({
-  name: 'accepts an array of stubs that are applied before the test is run',
-  async test (t: TestActions) {
-    const readFile = promisify(fs.readFile)
-    const stat = promisify(fs.stat)
-
-    const actual = await stat(await readFile('file_path'))
-
-    t.equal({
-      actual,
-      expected: 'file_path'
-    })
-  }
-})
-
-module.exports = {
-  suite
-}

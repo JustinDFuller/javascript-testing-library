@@ -45,7 +45,8 @@ export class UnstubbedModule extends Module {
         const property = this.getMethod(propertyName)
 
         if (isFunction(property)) {
-          this.swapMethod(
+          this.saveOriginalMethod(propertyName)
+          this.setMethod(
             propertyName,
             new UnstubbedDependency(this.moduleName, propertyName)
               .throwUnstubbedError

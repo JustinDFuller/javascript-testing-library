@@ -1,9 +1,8 @@
 import fs from 'fs'
 import ts from 'typescript'
 
-import { Module } from './Module'
 import { Suite, TestActions } from '../'
-import { StubNotUsedError } from './UserStubbedModule'
+import { Module, StubNotUsedError } from './Module'
 
 import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
@@ -148,6 +147,43 @@ suite.addTest({
             {
               module: 'typescript',
               method: 'transpileModule',
+              returns (): void {
+                return undefined
+              }
+            }
+          ],
+          test (_t) {
+            _t.equal({
+              expected: 1,
+              actual: 1
+            })
+          }
+        })
+        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      actual: error instanceof StubNotUsedError,
+      expected: true
+    })
+  }
+})
+
+suite.addTest({
+  name: 'throws an error for un-used stubs of auto-stubbed modules',
+  async test (t) {
+    let error = new Error('Expected an error to be thrown')
+
+    try {
+      await new Suite({ name: '(un-used stub)' })
+        .addTest({
+          name: '(un-used stub)',
+          stubs: [
+            {
+              module: 'fs',
+              method: 'readdir',
               returns (): void {
                 return undefined
               }
