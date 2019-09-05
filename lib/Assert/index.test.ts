@@ -4,7 +4,7 @@ import { Assert } from './'
 import { Suite, TestActions } from '../'
 
 export const suite = new Suite({
-  name: 'Assert'
+  name: 'Assert equal'
 })
 
 suite.addTest({

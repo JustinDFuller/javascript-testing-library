@@ -8,6 +8,11 @@ export interface AssertOptions {
   readonly actual: any // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
+export interface ThrowsOptions {
+  readonly expected: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  readonly actual: Function
+}
+
 export class Assert {
   static readonly CALLED_MORE_THAN_ONCE_ERROR =
     'Expected t.equal to only be called once per test.'
@@ -44,5 +49,21 @@ export class Assert {
     this.calls++
     this.throwIfCalledMoreThanOnce()
     assert.deepStrictEqual(options.actual, options.expected)
+  }
+
+  @boundMethod
+  throws (options: ThrowsOptions): void | never {
+    this.calls++
+    this.throwIfCalledMoreThanOnce()
+
+    let error = new Error('Expected an error to be thrown.')
+
+    try {
+      options.actual()
+    } catch (e) {
+      error = e
+    }
+
+    assert.deepStrictEqual(error instanceof options.expected, true)
   }
 }

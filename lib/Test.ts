@@ -1,10 +1,11 @@
 import { boundMethod } from 'autobind-decorator'
 
 import { Stub, StubOptions } from './Stub'
-import { Assert, AssertOptions } from './Assert'
+import { Assert, AssertOptions, ThrowsOptions } from './Assert'
 
 export interface TestActions {
   equal(options: AssertOptions): void
+  throws(options: ThrowsOptions): void
 }
 
 export interface TestFormatter {
@@ -83,7 +84,8 @@ export class Test {
       this.stub.init()
 
       const promise = this.options.test({
-        equal: this.assert.equal
+        equal: this.assert.equal,
+        throws: this.assert.throws
       })
 
       if (this.isPromise(promise)) {
