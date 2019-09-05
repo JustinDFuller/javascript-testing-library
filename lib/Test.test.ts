@@ -7,7 +7,7 @@ import { Suite, TestActions } from './'
 import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
-const suite = new Suite({
+export const suite = new Suite({
   name: 'Test'
 })
 
@@ -167,7 +167,3 @@ suite.addTest({
     })
   }
 })
-
-module.exports = {
-  suite
-}

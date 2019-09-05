@@ -3,12 +3,12 @@ import assert from 'assert'
 import { Assert } from './'
 import { Suite, TestActions } from '../'
 
-const suite = new Suite({
+export const suite = new Suite({
   name: 'Assert'
 })
 
 suite.addTest({
-  name: 'only provides a deep assertion',
+  name: 'provides a deep assertion',
   test (t: TestActions) {
     let error
 
@@ -68,7 +68,3 @@ suite.addTest({
     })
   }
 })
-
-module.exports = {
-  suite
-}
