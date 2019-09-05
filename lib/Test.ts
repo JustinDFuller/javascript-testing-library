@@ -25,8 +25,12 @@ export interface TestOptions {
   test(t: TestActions): void | Promise<void>
 }
 
+class NameRequiredError extends Error {
+  readonly message = 'Each test must have a name.'
+}
+
 export class Test {
-  static readonly NAME_REQUIRED_ERROR = 'Each test must have a name.'
+  static readonly NAME_REQUIRED_ERROR = NameRequiredError
 
   private readonly stub: Stub
   private readonly assert: Assert
@@ -54,7 +58,7 @@ export class Test {
 
   private validateName (): void | never {
     if (!this.options.name) {
-      throw new Error(Test.NAME_REQUIRED_ERROR)
+      throw new Test.NAME_REQUIRED_ERROR()
     }
   }
 

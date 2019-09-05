@@ -17,11 +17,13 @@ class CalledMoreThanOnceError extends Error {
   readonly message = 'Expected t.equal to only be called once per test.'
 }
 
+class EqualNotCalledError extends Error {
+  readonly message = 'Expected t.equal to be called at least once.'
+}
+
 export class Assert {
   static readonly CALLED_MORE_THAN_ONCE_ERROR = CalledMoreThanOnceError
-
-  static readonly EQUAL_NOT_CALLED_ERROR =
-    'Expected t.equal to be called at least once.'
+  static readonly EQUAL_NOT_CALLED_ERROR = EqualNotCalledError
 
   static readonly INVALID_OPTIONS_ERROR = OptionsValidator.INVALID_OPTIONS_ERROR
   static readonly NO_TYPE_EXPECTED_ERROR =
@@ -41,7 +43,7 @@ export class Assert {
 
   throwIfNotCalledAtLeastOnce (): void | never {
     if (this.calls === 0) {
-      throw new Error(Assert.EQUAL_NOT_CALLED_ERROR)
+      throw new Assert.EQUAL_NOT_CALLED_ERROR()
     }
   }
 

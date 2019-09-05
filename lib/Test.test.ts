@@ -42,27 +42,21 @@ suite.addTest({
 suite.addTest({
   name: 'throws an error if name is not provided',
   test (t: TestActions) {
-    let error
-
-    try {
-      new Test({
-        formatter: new NoopFormatter(),
-        exitStrategy: new ThrowExitStrategy(),
-        name: '',
-        test (t: TestActions): void {
-          t.equal({
-            expected: 1,
-            actual: 2
-          })
-        }
-      }).execute()
-    } catch (e) {
-      error = e
-    }
-
-    t.equal({
-      actual: error.message,
-      expected: Test.NAME_REQUIRED_ERROR
+    t.throws({
+      expected: Test.NAME_REQUIRED_ERROR,
+      actual () {
+        new Test({
+          formatter: new NoopFormatter(),
+          exitStrategy: new ThrowExitStrategy(),
+          name: '',
+          test (t: TestActions): void {
+            t.equal({
+              expected: 1,
+              actual: 2
+            })
+          }
+        }).execute()
+      }
     })
   }
 })
@@ -70,22 +64,16 @@ suite.addTest({
 suite.addTest({
   name: 'throws an error if t.equal is not called at least once',
   test (t: TestActions) {
-    let error
-
-    try {
-      new Test({
-        formatter: new NoopFormatter(),
-        exitStrategy: new ThrowExitStrategy(),
-        name: '(not calling t.equal at least once)',
-        test (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
-      }).execute()
-    } catch (e) {
-      error = e
-    }
-
-    t.equal({
+    t.throws({
       expected: Assert.EQUAL_NOT_CALLED_ERROR,
-      actual: error.message
+      actual () {
+        new Test({
+          formatter: new NoopFormatter(),
+          exitStrategy: new ThrowExitStrategy(),
+          name: '(not calling t.equal at least once)',
+          test (): void {} // eslint-disable-line @typescript-eslint/no-empty-function
+        }).execute()
+      }
     })
   }
 })
