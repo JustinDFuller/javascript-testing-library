@@ -41,7 +41,7 @@ export class Module {
     return this
   }
 
-  private setMethod (methodName: string, returns: Function): Module {
+  protected setMethod (methodName: string, returns: Function): Module {
     this.module[methodName] = returns
 
     return this
@@ -49,6 +49,14 @@ export class Module {
 
   protected getMethod (methodName: string): Function {
     return this.module[methodName]
+  }
+
+  protected resetCachedMethods (): void {
+    this.cachedMethods.forEach(
+      (returns: Function, methodName: string): void => {
+        this.setMethod(methodName, returns)
+      }
+    )
   }
 
   swapMethod (methodName: string, returns: Function): Module {
@@ -59,11 +67,7 @@ export class Module {
   }
 
   reset (): Module {
-    this.cachedMethods.forEach(
-      (returns: Function, methodName: string): void => {
-        this.setMethod(methodName, returns)
-      }
-    )
+    this.resetCachedMethods()
 
     return this
   }

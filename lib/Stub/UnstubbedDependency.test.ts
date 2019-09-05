@@ -152,10 +152,10 @@ suite.addTest({
 suite.addTest({
   name: 'automatically mocks the process module',
   async test (t: TestActions) {
-    let error
+    let error = new Error('Expected an error to be thrown.')
 
     try {
-      await require('process').cwd()
+      await require('process').getgid()
     } catch (e) {
       error = e
     }
@@ -163,7 +163,7 @@ suite.addTest({
     t.equal({
       expected: `${
         UnstubbedDependency.ACCESSING_UNSTUBBED_DEPENDENCY_ERROR
-      } process::cwd`,
+      } process::getgid`,
       actual: error.message
     })
   }

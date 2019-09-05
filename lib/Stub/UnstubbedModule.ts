@@ -14,7 +14,14 @@ class Exclusions {
     this.exclusions = {
       fs: ['ReadStream'],
       net: ['Socket'], // currently don't understand why this exclusion is needed
-      process: ['exit', 'binding']
+      process: [
+        'exit',
+        'binding',
+        'cwd',
+        '_fatalException',
+        'emit',
+        'reallyExit'
+      ]
     }
   }
 

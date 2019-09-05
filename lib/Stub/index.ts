@@ -2,6 +2,7 @@ import { boundMethod } from 'autobind-decorator'
 
 import { Module } from './Module'
 import { UnstubbedModule } from './UnstubbedModule'
+import { UserStubbedModule } from './UserStubbedModule'
 
 const automaticallyMockedModules = [
   'fs',
@@ -20,7 +21,11 @@ export interface StubOptions {
   returns: Function
 }
 
+class UnusedStubError extends Error {}
+
 export class Stub {
+  static readonly UnusedStubError = UnusedStubError
+
   private readonly stubbedModules: Map<string, Module>
 
   constructor () {
@@ -32,7 +37,7 @@ export class Stub {
       return new UnstubbedModule(moduleName)
     }
 
-    return new Module(moduleName)
+    return new UserStubbedModule(moduleName)
   }
 
   private getModule (moduleName: string): Module {

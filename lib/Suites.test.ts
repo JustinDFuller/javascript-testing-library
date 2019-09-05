@@ -6,17 +6,7 @@ import { NoopFormatter } from './Formatter/Noop'
 import { ThrowExitStrategy } from './ExitStrategy/Throw'
 
 export const suite = new Suite({
-  name: 'Suites',
-  stubs: [
-    {
-      module: 'ts-node',
-      method: 'register',
-      returns (): never {
-        // best just to stop processing after register is called
-        throw new Error('Called')
-      }
-    }
-  ]
+  name: 'Suites'
 })
 
 suite.addTest({
@@ -146,7 +136,17 @@ suite.addTest({
       expected: 'Called',
       actual: error.message
     })
-  }
+  },
+  stubs: [
+    {
+      module: 'ts-node',
+      method: 'register',
+      returns (): never {
+        // best just to stop processing after register is called
+        throw new Error('Called')
+      }
+    }
+  ]
 })
 
 suite.addTest({

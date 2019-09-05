@@ -3,10 +3,12 @@ import ts from 'typescript'
 
 import { Module } from './Module'
 import { Suite, TestActions } from '../'
+import { StubNotUsedError } from './UserStubbedModule'
+
 import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
-const suite = new Suite({
+export const suite = new Suite({
   name: 'Stub'
 })
 
@@ -101,10 +103,10 @@ suite.addTest({
               }
             }
           ],
-          test (t: TestActions) {
+          test (_t: TestActions) {
             const { outputText } = ts.transpileModule('let test = 1', {})
 
-            t.equal({
+            _t.equal({
               expected: 'fake output text',
               actual: outputText
             })
@@ -112,10 +114,10 @@ suite.addTest({
         })
         .addTest({
           name: '(using typescript transpileModule without stubbing it)',
-          test (t: TestActions) {
+          test (_t: TestActions) {
             const { outputText } = ts.transpileModule('let test = 1', {})
 
-            t.equal({
+            _t.equal({
               expected: 'var test = 1;\n',
               actual: outputText
             })
@@ -133,6 +135,39 @@ suite.addTest({
   }
 })
 
-module.exports = {
-  suite
-}
+suite.addTest({
+  name: 'throws an error for un-used stubs',
+  async test (t) {
+    let error = new Error('Expected an error to be thrown')
+
+    try {
+      await new Suite({ name: '(un-used stub)' })
+        .addTest({
+          name: '(un-used stub)',
+          stubs: [
+            {
+              module: 'typescript',
+              method: 'transpileModule',
+              returns (): void {
+                return undefined
+              }
+            }
+          ],
+          test (_t) {
+            _t.equal({
+              expected: 1,
+              actual: 1
+            })
+          }
+        })
+        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+    } catch (e) {
+      error = e
+    }
+
+    t.equal({
+      actual: error instanceof StubNotUsedError,
+      expected: true
+    })
+  }
+})

@@ -24,6 +24,10 @@ export class UnstubbedDependency {
 
   @boundMethod
   throwUnstubbedError (...args: Function[]): never | void {
+    // const stack = new Error().stack
+    // const isInternal = stack && stack.split('/n').find(line => line.includes('internal/'))
+
+    // if (!isInternal) {
     const last = args[args.length - 1]
 
     if (isFunction(last)) {
@@ -31,5 +35,6 @@ export class UnstubbedDependency {
     }
 
     throw this.getError()
+    // }
   }
 }
