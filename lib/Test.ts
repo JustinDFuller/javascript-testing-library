@@ -78,15 +78,14 @@ export class Test {
     if (this.options.stubs) {
       this.options.stubs.forEach(this.stub.add)
     }
+    this.stub.automaticallyStubExpensiveIO()
   }
 
   execute (): void | Promise<void> {
     this.emitTest()
+    this.initializeStubs()
 
     try {
-      this.initializeStubs()
-      this.stub.init()
-
       const promise = this.options.test({
         equal: this.assert.equal,
         throws: this.assert.throws

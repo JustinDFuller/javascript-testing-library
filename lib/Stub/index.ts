@@ -50,7 +50,7 @@ export class Stub {
     return this.getModule(moduleName)
   }
 
-  init (): void {
+  automaticallyStubExpensiveIO (): void {
     automaticallyMockedModules.forEach(moduleName => this.getModule(moduleName))
   }
 
