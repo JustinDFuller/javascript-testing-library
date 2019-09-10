@@ -63,7 +63,7 @@ export class Assert {
 
     let error = new Error('Expected an error to be thrown.')
 
-    function assertError (e: Error): void | never {
+    function assertError (e: Error = error): void | never {
       assert.deepStrictEqual(e instanceof options.expected, true, e.message)
     }
 
@@ -71,7 +71,7 @@ export class Assert {
       const promise = options.actual()
 
       if (promise && promise.catch) {
-        return promise.catch(assertError)
+        return promise.then(assertError).catch(assertError)
       }
     } catch (e) {
       error = e

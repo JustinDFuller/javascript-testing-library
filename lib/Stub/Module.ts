@@ -18,6 +18,12 @@ export class StubNotUsedError extends Error {
   }
 }
 
+export class StubbedTwiceError extends Error {
+  constructor (moduleName: string, methodName: string) {
+    super(`Expected stub to only be created once. ${moduleName}.${methodName}`)
+  }
+}
+
 class StubbedMethod {
   private called = false
   private readonly stub: Function
@@ -76,6 +82,14 @@ export class Module {
     }
   }
 
+  private ensureStubsCalled (): never | void {
+    this.stubbedMethods.forEach(
+      (stub: StubbedMethod): never | void => {
+        stub.ensureCalled()
+      }
+    )
+  }
+
   protected saveOriginalMethod (methodName: string): Module {
     const originalMethod = this.getMethod(methodName)
 
@@ -84,14 +98,6 @@ export class Module {
     }
 
     return this
-  }
-
-  private ensureStubsCalled (): never | void {
-    this.stubbedMethods.forEach(
-      (stub: StubbedMethod): never | void => {
-        stub.ensureCalled()
-      }
-    )
   }
 
   protected setMethod (methodName: string, returns: Function): Module {
@@ -121,7 +127,12 @@ export class Module {
       moduleName: this.moduleName
     })
 
-    this.stubbedMethods.set(methodName, stub)
+    if (this.stubbedMethods.has(methodName)) {
+      throw new StubbedTwiceError(this.moduleName, methodName)
+    } else {
+      this.stubbedMethods.set(methodName, stub)
+    }
+
     this.setMethod(methodName, stub.execute)
 
     return this

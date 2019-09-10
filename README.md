@@ -123,7 +123,7 @@ Currently averaging ~1300 tests per second. Hoping to have this at ~3k+ tests pe
 * [x] Basic CLI
 * [x] Gracefully handle invalid test files
 * [x] Throw an error if a stub is not used by a test
+* [x] Don't allow a method to be stubbed twice in a test
 * [ ] Built-in watch mode
 * [ ] Some sort of multi-thread multi-process perf enhancement
 * [ ] Find and run related tests
-* [ ] Don't allow a method to be stubbed twice in a test

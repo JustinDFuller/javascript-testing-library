@@ -2,7 +2,7 @@ import fs from 'fs'
 import ts from 'typescript'
 
 import { Suite, TestActions } from '../'
-import { Module, StubNotUsedError } from './Module'
+import { Module, StubNotUsedError, StubbedTwiceError } from './Module'
 
 import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
@@ -204,6 +204,44 @@ suite.addTest({
     t.equal({
       actual: error instanceof StubNotUsedError,
       expected: true
+    })
+  }
+})
+
+suite.addTest({
+  name: 'throws an error when a stub is created twice',
+  async test (t) {
+    await t.throws({
+      expected: StubbedTwiceError,
+      async actual () {
+        await new Suite({ name: '(stub created twice)' })
+          .addTest({
+            name: '(stub created twice)',
+            stubs: [
+              {
+                module: 'fs',
+                method: 'readdir',
+                returns (): void {
+                  return undefined
+                }
+              },
+              {
+                module: 'fs',
+                method: 'readdir',
+                returns (): void {
+                  return undefined
+                }
+              }
+            ],
+            test (_t) {
+              _t.equal({
+                expected: 1,
+                actual: 1
+              })
+            }
+          })
+          .execute(new NoopFormatter(), new ThrowExitStrategy())
+      }
     })
   }
 })
