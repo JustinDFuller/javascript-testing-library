@@ -9,15 +9,16 @@ const suite = new Suite({
 for (let i = 0; i <= 1000; i++) {
   suite.addTest({
     name: `test ${i}`,
-    test (t) {
-      t.stub({
+    stubs: [
+      {
         module: 'fs',
         method: 'readdirSync',
         returns (dir) {
           return ['value']
         }
-      })
-
+      }
+    ],
+    test (t) {
       const actual = fs.readdirSync('somedir')
 
       t.equal({

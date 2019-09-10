@@ -9,15 +9,16 @@ const suite = new Suite({
 for (let i = 0; i <= 1000; i++) {
   suite.addTest({
     name: `test ${i}`,
-    async test (t) {
-      t.stub({
+    stubs: [
+      {
         module: 'fs',
         method: 'readdir',
         returns (dir, callback) {
           return callback(null, ['value'])
         }
-      })
-
+      }
+    ],
+    async test (t) {
       const actual = await new Promise(function (resolve) {
         fs.readdir('something', function (err, res) {
           resolve(res)
