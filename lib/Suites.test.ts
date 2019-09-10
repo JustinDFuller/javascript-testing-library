@@ -18,7 +18,7 @@ suite.addTest({
       paths: [],
       formatter: new NoopFormatter(),
       exitStrategy: new ThrowExitStrategy()
-    }).runTests([
+    }).runSuites([
       {
         path: 'none',
         suite: new Suite({
@@ -96,7 +96,7 @@ suite.addTest({
         paths: [],
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
-      }).runTests([
+      }).runSuites([
         {
           // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
           // @ts-ignore: need to test an invalid suite
@@ -127,7 +127,7 @@ suite.addTest({
         paths: ['path/to/file.ts'],
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
-      }).runAll()
+      }).execute()
     } catch (e) {
       error = e
     }
@@ -161,7 +161,7 @@ suite.addTest({
         paths: ['path/to/file.js'],
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
-      }).runAll()
+      }).execute()
     } catch (e) {
       error = e.message.split('\n')[0]
     }

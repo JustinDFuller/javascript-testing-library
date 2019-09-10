@@ -21,6 +21,9 @@ export class Suite {
   private readonly stubs: StubOptions[]
   private readonly tests: Set<AddTestOptions>
 
+  private formatter: SuiteFormatter | undefined
+  private exitStrategy: TestExitStrategy | undefined
+
   constructor (options: SuiteOptions) {
     this.tests = new Set()
     this.name = options.name
@@ -41,9 +44,14 @@ export class Suite {
     }
   }
 
-  private logName (formatter: SuiteFormatter): TestFormatter {
+  private logName (): TestFormatter {
     this.validateName()
-    return formatter.emitSuite(this.name)
+
+    if (this.formatter && this.formatter.emitSuite) {
+      return this.formatter.emitSuite(this.name)
+    }
+
+    throw new Error('No formatter')
   }
 
   private async executeTests (
@@ -74,12 +82,15 @@ export class Suite {
     return this
   }
 
-  runTests (
+  execute (
     formatter: SuiteFormatter,
     exitStrategy: TestExitStrategy
   ): Promise<void> {
-    const testFormatter = this.logName(formatter)
+    this.formatter = formatter
+    this.exitStrategy = exitStrategy
+
+    const testFormatter = this.logName()
     this.validateTests()
-    return this.executeTests(testFormatter, exitStrategy)
+    return this.executeTests(testFormatter, this.exitStrategy)
   }
 }

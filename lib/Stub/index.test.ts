@@ -68,7 +68,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+        .execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -122,7 +122,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+        .execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -159,7 +159,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+        .execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -196,7 +196,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+        .execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }

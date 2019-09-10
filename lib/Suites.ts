@@ -57,18 +57,18 @@ export class Suites {
     const { path, suite } = suiteMeta
     this.formatter.emitFile(path)
 
-    if (!suite || !suite.runTests) {
+    if (!suite || !suite.execute) {
       throw new Error(format(Suites.INVALID_TEST_ERROR, path))
     }
 
-    await suite.runTests(this.formatter, this.exitStrategy)
+    await suite.execute(this.formatter, this.exitStrategy)
   }
 
   private requireSuites (paths: string[]): SuiteMeta[] {
     return paths.map(this.requireSuite)
   }
 
-  async runTests (suites: SuiteMeta[]): Promise<void> {
+  async runSuites (suites: SuiteMeta[]): Promise<void> {
     try {
       for (const suite of suites) {
         await this.runSuite(suite)
@@ -79,8 +79,8 @@ export class Suites {
     }
   }
 
-  async runAll (): Promise<void> {
-    await this.runTests(this.requireSuites(this.paths))
+  async execute (): Promise<void> {
+    await this.runSuites(this.requireSuites(this.paths))
     this.formatter.end()
     this.exitStrategy.end()
   }

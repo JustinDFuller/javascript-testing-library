@@ -16,7 +16,7 @@ suite.addTest({
     try {
       new Suite({
         name: ''
-      }).runTests(new NoopFormatter(), new ThrowExitStrategy())
+      }).execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -36,7 +36,7 @@ suite.addTest({
     try {
       new Suite({
         name: '(running a suite with no tests)'
-      }).runTests(new NoopFormatter(), new ThrowExitStrategy())
+      }).execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }
@@ -66,7 +66,7 @@ suite.addTest({
             })
           }
         })
-        .runTests(new NoopFormatter(), new ThrowExitStrategy())
+        .execute(new NoopFormatter(), new ThrowExitStrategy())
     } catch (e) {
       error = e
     }

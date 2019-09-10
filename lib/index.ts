@@ -12,7 +12,7 @@ export async function main (globPattern: string): Promise<void> {
     paths,
     formatter,
     exitStrategy
-  }).runAll()
+  }).execute()
 }
 
 export { Suite } from './Suite'
