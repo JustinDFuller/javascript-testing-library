@@ -18,5 +18,3 @@ const cli = meow(`
 `)
 
 main(cli.input[0])
-  .then(res => console.log('done', res))
-  .catch(err => console.error('err', err))
