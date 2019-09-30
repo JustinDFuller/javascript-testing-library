@@ -31,7 +31,7 @@ const cli = meow(
 const formatter = new SpinnerFormatter()
 const exitStrategy = new ProcessExitStrategy()
 
-requirer([cli.flags.require].flat())
+requirer(cli.flags.require)
 
 main(cli.input[0], { formatter, exitStrategy })
   .then(console.log)
