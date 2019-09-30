@@ -138,8 +138,11 @@ export class Module {
     return this
   }
 
-  reset (): Module {
-    this.ensureStubsCalled()
+  reset (isTestPassed: boolean): Module {
+    if (isTestPassed) {
+      this.ensureStubsCalled()
+    }
+
     this.resetCachedMethods()
 
     return this

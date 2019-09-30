@@ -1,13 +1,19 @@
-import { Suites } from './Suites'
 import { globMatcher } from './glob'
-import { SpinnerFormatter } from './Formatter/Spinner'
-import { ProcessExitStrategy } from './ExitStrategy/Process'
+import { Suites, SuitesFormatter, SuitesExitStrategy } from './Suites'
 
-export async function main (globPattern: string): Promise<void> {
-  const formatter = new SpinnerFormatter()
-  const exitStrategy = new ProcessExitStrategy()
+interface LibOptions {
+  formatter: SuitesFormatter
+  exitStrategy: SuitesExitStrategy
+}
+
+export async function main (
+  globPattern: string,
+  options: LibOptions
+): Promise<void> {
+  const { exitStrategy, formatter } = options
 
   const paths = await globMatcher(globPattern)
+
   await new Suites({
     paths,
     formatter,

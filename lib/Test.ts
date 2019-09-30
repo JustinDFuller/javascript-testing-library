@@ -45,13 +45,13 @@ export class Test {
 
   @boundMethod
   private handleComplete (): void {
-    this.stub.resetStubs()
+    this.stub.resetStubs(true)
     this.assert.throwIfNotCalledAtLeastOnce()
   }
 
   @boundMethod
   private handleError (err: Error): void {
-    this.stub.resetStubs()
+    this.stub.resetStubs(false)
     this.options.formatter.emitError(err)
     this.options.exitStrategy.testError(err)
   }

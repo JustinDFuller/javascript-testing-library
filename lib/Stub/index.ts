@@ -55,8 +55,8 @@ export class Stub {
   }
 
   @boundMethod
-  resetStubs (): Stub {
-    this.stubbedModules.forEach(mod => mod.reset())
+  resetStubs (isTestPassed: boolean): Stub {
+    this.stubbedModules.forEach(mod => mod.reset(isTestPassed))
 
     return this
   }

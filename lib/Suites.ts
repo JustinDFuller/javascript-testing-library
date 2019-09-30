@@ -1,6 +1,4 @@
-import { extname } from 'path'
 import { format } from 'util'
-import { register } from 'ts-node'
 
 import { TestExitStrategy } from './Test'
 import { Suite, SuiteFormatter } from './Suite'
@@ -42,11 +40,6 @@ export class Suites {
   }
 
   private requireSuite (path: string): SuiteMeta {
-    if (!Suites.registered && extname(path) === '.ts') {
-      Suites.registered = true
-      register()
-    }
-
     return {
       suite: require(path).suite,
       path: require.resolve(path)
