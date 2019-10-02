@@ -7,7 +7,5 @@ export class NoopFormatter implements SuitesFormatter, TestFormatter {
   emitFile = noop
   emitTest = noop
   emitError = noop
-  emitSuite (): NoopFormatter {
-    return this
-  }
+  emitSuite = noop
 }

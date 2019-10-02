@@ -1,5 +1,5 @@
 import { StubOptions } from './Stub'
-import { Test, TestOptions, TestFormatter, TestExitStrategy } from './Test'
+import { Test, TestOptions, TestExitStrategy, TestFormatter } from './Test'
 
 type AddTestOptions = Pick<TestOptions, 'name' | 'test' | 'stubs'>
 
@@ -9,7 +9,7 @@ interface SuiteOptions {
 }
 
 export interface SuiteFormatter {
-  emitSuite(name: string): TestFormatter
+  emitSuite(name: string): void
 }
 
 export class Suite {
@@ -21,7 +21,7 @@ export class Suite {
   private readonly stubs: StubOptions[]
   private readonly tests: Set<AddTestOptions>
 
-  private formatter: SuiteFormatter | undefined
+  private formatter: SuiteFormatter & TestFormatter | undefined
   private exitStrategy: TestExitStrategy | undefined
 
   constructor (options: SuiteOptions) {
@@ -44,30 +44,29 @@ export class Suite {
     }
   }
 
-  private logName (): TestFormatter {
+  private logName (): void {
     this.validateName()
 
     if (this.formatter && this.formatter.emitSuite) {
-      return this.formatter.emitSuite(this.name)
+      this.formatter.emitSuite(this.name)
+    } else {
+      throw new Error('No formatter')
     }
-
-    throw new Error('No formatter')
   }
 
-  private async executeTests (
-    testFormatter: TestFormatter,
-    exitStrategy: TestExitStrategy
-  ): Promise<void> {
-    const formatter = testFormatter
-
+  private async executeTests (): Promise<void> {
     for (const testOptions of this.tests) {
-      const options = {
-        ...testOptions,
-        formatter,
-        exitStrategy,
-        stubs: this.stubs.concat(testOptions.stubs || [])
+      if (this.formatter && this.exitStrategy) {
+        const options = {
+          ...testOptions,
+          formatter: this.formatter,
+          exitStrategy: this.exitStrategy,
+          stubs: this.stubs.concat(testOptions.stubs || [])
+        }
+        await new Test(options).execute()
+      } else {
+        throw new Error('Missing formatter or exit strategy')
       }
-      await new Test(options).execute()
     }
   }
 
@@ -83,14 +82,15 @@ export class Suite {
   }
 
   execute (
-    formatter: SuiteFormatter,
+    formatter: SuiteFormatter & TestFormatter,
     exitStrategy: TestExitStrategy
   ): Promise<void> {
     this.formatter = formatter
     this.exitStrategy = exitStrategy
 
-    const testFormatter = this.logName()
+    this.logName()
     this.validateTests()
-    return this.executeTests(testFormatter, this.exitStrategy)
+
+    return this.executeTests()
   }
 }

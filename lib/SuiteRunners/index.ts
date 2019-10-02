@@ -1,7 +1,7 @@
 import { SuiteFormatter } from '../Suite'
-import { TestExitStrategy } from '../Test'
+import { TestExitStrategy, TestFormatter } from '../Test'
 
-export interface SuitesFormatter extends SuiteFormatter {
+export interface SuitesFormatter extends SuiteFormatter, TestFormatter {
   emitFile(filePath: string): void
   emitError(error: Error): void
   end(): void

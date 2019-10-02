@@ -56,10 +56,9 @@ export class SpinnerFormatter implements SuitesFormatter, TestFormatter {
     this.file = filePath
   }
 
-  emitSuite (name: string): SuitesFormatter & TestFormatter {
+  emitSuite (name: string): void {
     this.nextSuite = name
     this.spinner.text = name
-    return this
   }
 
   emitTest (nextTest: string): void {
