@@ -1,12 +1,12 @@
 import { format } from 'util'
 
-import { Suites } from './Suites'
+import { SingleRunner } from './SingleRunner'
 import { Suite, TestActions } from '../'
 import { NoopFormatter } from '../Formatter/Noop'
 import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
 export const suite = new Suite({
-  name: 'Suites'
+  name: 'SingleRunner'
 })
 
 suite.addTest({
@@ -14,7 +14,7 @@ suite.addTest({
   async test (t: TestActions) {
     const order: number[] = []
 
-    await new Suites({
+    await new SingleRunner({
       formatter: new NoopFormatter(),
       exitStrategy: new ThrowExitStrategy()
     }).runSuites([
@@ -91,7 +91,7 @@ suite.addTest({
     let error = new Error('Expected an error to be called')
 
     try {
-      await new Suites({
+      await new SingleRunner({
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
       }).runSuites([
@@ -107,7 +107,7 @@ suite.addTest({
     }
 
     t.equal({
-      expected: format(Suites.INVALID_TEST_ERROR, path),
+      expected: format(SingleRunner.INVALID_TEST_ERROR, path),
       actual: error.message
     })
   }

@@ -8,7 +8,7 @@ interface SuiteMeta {
   path: string
 }
 
-export class Suites implements SuiteRunner {
+export class SingleRunner implements SuiteRunner {
   static registered = false
   static readonly INVALID_TEST_ERROR =
     'Invalid test encountered. Make sure suite is exported. Test File: %s'
@@ -33,7 +33,7 @@ export class Suites implements SuiteRunner {
     this.formatter.emitFile(path)
 
     if (!suite || !suite.execute) {
-      throw new Error(format(Suites.INVALID_TEST_ERROR, path))
+      throw new Error(format(SingleRunner.INVALID_TEST_ERROR, path))
     }
 
     await suite.execute(this.formatter, this.exitStrategy)

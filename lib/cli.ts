@@ -2,7 +2,7 @@ import meow from 'meow'
 
 import { globMatcher } from './glob'
 import { requirer } from './requirer'
-import { Suites } from './SuiteRunners/Suites'
+import { SingleRunner } from './SuiteRunners/SingleRunner'
 import { SpinnerFormatter } from './Formatter/Spinner'
 import { ProcessExitStrategy } from './ExitStrategy/Process'
 
@@ -32,7 +32,7 @@ export async function cli () {
 
   const formatter = new SpinnerFormatter()
   const exitStrategy = new ProcessExitStrategy()
-  const suiteRunner = new Suites({ formatter, exitStrategy })
+  const suiteRunner = new SingleRunner({ formatter, exitStrategy })
 
   const paths = await globMatcher(cli.input[0])
 
