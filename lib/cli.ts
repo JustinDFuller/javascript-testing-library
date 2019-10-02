@@ -1,12 +1,12 @@
 import meow from 'meow'
 
-import { main } from './'
+import { globMatcher } from './glob'
 import { requirer } from './requirer'
 import { Suites } from './SuiteRunners/Suites'
 import { SpinnerFormatter } from './Formatter/Spinner'
 import { ProcessExitStrategy } from './ExitStrategy/Process'
 
-export function cli () {
+export async function cli () {
   const cli = meow(
     `
     Usage
@@ -28,13 +28,16 @@ export function cli () {
     }
   )
 
+  requirer(cli.flags.require)
+
   const formatter = new SpinnerFormatter()
   const exitStrategy = new ProcessExitStrategy()
   const suiteRunner = new Suites({ formatter, exitStrategy })
 
-  requirer(cli.flags.require)
+  const paths = await globMatcher(cli.input[0])
 
-  return main(cli.input[0], { suiteRunner })
+  await suiteRunner
+    .execute(paths)
     .then(console.log)
     .catch(console.error)
 }
