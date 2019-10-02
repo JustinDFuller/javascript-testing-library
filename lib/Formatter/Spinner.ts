@@ -5,7 +5,7 @@ import figures from 'figures'
 import symbols from 'log-symbols'
 
 import { TestFormatter } from '../Test'
-import { SuitesFormatter } from '../Suites'
+import { SuitesFormatter } from '../SuiteRunners'
 
 interface StopOptions {
   symbol: string

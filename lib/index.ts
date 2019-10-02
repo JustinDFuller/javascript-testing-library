@@ -1,24 +1,17 @@
 import { globMatcher } from './glob'
-import { Suites, SuitesFormatter, SuitesExitStrategy } from './Suites'
+import { SuiteRunner } from './SuiteRunners'
 
 interface LibOptions {
-  formatter: SuitesFormatter
-  exitStrategy: SuitesExitStrategy
+  suiteRunner: SuiteRunner
 }
 
 export async function main (
   globPattern: string,
   options: LibOptions
 ): Promise<void> {
-  const { exitStrategy, formatter } = options
-
   const paths = await globMatcher(globPattern)
 
-  await new Suites({
-    paths,
-    formatter,
-    exitStrategy
-  }).execute()
+  await options.suiteRunner.execute(paths)
 }
 
 export { Suite } from './Suite'

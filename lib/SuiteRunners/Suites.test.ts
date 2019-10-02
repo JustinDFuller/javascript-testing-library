@@ -1,9 +1,9 @@
 import { format } from 'util'
 
-import { Suite, TestActions } from './'
 import { Suites } from './Suites'
-import { NoopFormatter } from './Formatter/Noop'
-import { ThrowExitStrategy } from './ExitStrategy/Throw'
+import { Suite, TestActions } from '../'
+import { NoopFormatter } from '../Formatter/Noop'
+import { ThrowExitStrategy } from '../ExitStrategy/Throw'
 
 export const suite = new Suite({
   name: 'Suites'
@@ -15,7 +15,6 @@ suite.addTest({
     const order: number[] = []
 
     await new Suites({
-      paths: [],
       formatter: new NoopFormatter(),
       exitStrategy: new ThrowExitStrategy()
     }).runSuites([
@@ -93,7 +92,6 @@ suite.addTest({
 
     try {
       await new Suites({
-        paths: [],
         formatter: new NoopFormatter(),
         exitStrategy: new ThrowExitStrategy()
       }).runSuites([

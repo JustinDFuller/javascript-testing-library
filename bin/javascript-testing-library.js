@@ -4,6 +4,7 @@ const meow = require('meow')
 
 const { main } = require('../dist')
 const { requirer } = require('../dist/requirer')
+const { Suites } = require('../dist/SuiteRunners/Suites')
 const { SpinnerFormatter } = require('../dist/Formatter/Spinner')
 const { ProcessExitStrategy } = require('../dist/ExitStrategy/Process')
 
@@ -30,9 +31,10 @@ const cli = meow(
 
 const formatter = new SpinnerFormatter()
 const exitStrategy = new ProcessExitStrategy()
+const suiteRunner = new Suites({ formatter, exitStrategy })
 
 requirer(cli.flags.require)
 
-main(cli.input[0], { formatter, exitStrategy })
+main(cli.input[0], { formatter, exitStrategy, suiteRunner })
   .then(console.log)
   .catch(console.error)

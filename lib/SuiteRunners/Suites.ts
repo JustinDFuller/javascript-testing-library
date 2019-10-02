@@ -1,42 +1,24 @@
 import { format } from 'util'
 
-import { TestExitStrategy } from './Test'
-import { Suite, SuiteFormatter } from './Suite'
-
-export interface SuitesFormatter extends SuiteFormatter {
-  emitFile(filePath: string): void
-  emitError(error: Error): void
-  end(): void
-}
-
-export interface SuitesExitStrategy extends TestExitStrategy {
-  end(): void
-}
-
-interface SuitesOptions {
-  exitStrategy: SuitesExitStrategy
-  formatter: SuitesFormatter
-  paths: string[]
-}
+import { Suite } from '../Suite'
+import { SuitesOptions, SuitesFormatter, SuitesExitStrategy, SuiteRunner } from './'
 
 interface SuiteMeta {
   suite: Suite
   path: string
 }
 
-export class Suites {
+export class Suites implements SuiteRunner {
   static registered = false
   static readonly INVALID_TEST_ERROR =
     'Invalid test encountered. Make sure suite is exported. Test File: %s'
 
   private readonly exitStrategy: SuitesExitStrategy
   private readonly formatter: SuitesFormatter
-  private readonly paths: string[]
 
   constructor (options: SuitesOptions) {
     this.exitStrategy = options.exitStrategy
     this.formatter = options.formatter
-    this.paths = options.paths
   }
 
   private requireSuite (path: string): SuiteMeta {
@@ -72,8 +54,8 @@ export class Suites {
     }
   }
 
-  async execute (): Promise<void> {
-    await this.runSuites(this.requireSuites(this.paths))
+  async execute (paths: string[]): Promise<void> {
+    await this.runSuites(this.requireSuites(paths))
     this.formatter.end()
     this.exitStrategy.end()
   }
