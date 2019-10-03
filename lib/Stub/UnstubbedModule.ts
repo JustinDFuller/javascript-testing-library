@@ -20,7 +20,10 @@ class Exclusions {
         'cwd',
         '_fatalException',
         'emit',
-        'reallyExit'
+        'reallyExit',
+        'listeners',
+        'kill',
+        '_kill'
       ]
     }
   }
