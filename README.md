@@ -8,7 +8,7 @@ A highly opinionated testing library for JavaScript
 
 ## Install
 
-```bash
+```console
 npm install javascript-testing-library --save-dev
 ```
 
@@ -106,7 +106,7 @@ Errors show a diff, including for objects an arrays. The stack trace will highli
 
 Currently averaging ~1300 tests per second. Hoping to have this at ~3k+ tests per second.
 
-```
+```console
 4004 Tests Passed in 3.369 seconds
 ```
 
